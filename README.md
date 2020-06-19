@@ -36,6 +36,7 @@
         每日答题答够十题也会自动返回了  
         每日阅读的文章自动添加到数据库，重复阅读会自动返回，感谢[wanghuisenior](https://github.com/wanghuisenior)  
         更改包名为com.lazyxue（因为使用auto.js pro打包导致和之前的签名不同）  
+        增加了订阅功能，感谢[colincai](https://github.com/ivanwhaf/xxqg-helper/issues/75)（未测试稳定性，未实装，感兴趣可以下载subscribe.js在学习强国主页运行即可）
 ***
         
 - 2020.04.02  
@@ -80,7 +81,8 @@
 - 2019.11.21  
         发布    
 
-<font size=5>**特别感谢**</font> <font size=1 color=gray>以下排名不分先后</font>
+<font size=5>**特别感谢**</font>  
+<font size=1 color=gray>以下排名不分先后</font>
 ----
 
 [**lgpersonal**](https://github.com/lgpersonal/)  
