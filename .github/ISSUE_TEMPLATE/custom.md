@@ -1,0 +1,17 @@
+---
+name: Custom issue template
+about: Describe this issue template's purpose here.
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+你的手机型号：
+
+你的安卓版本：
+
+错误的截图：
+（可以到懒人学习界面，点击返回键查看日志，最好把红色的部分截下，图片可以上传到这里：https://imgurl.org/，然后把图片链接贴在这里）
+
+错误描述：
