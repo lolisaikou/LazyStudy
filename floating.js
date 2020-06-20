@@ -9,7 +9,6 @@ let window = floaty.window(
         <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="sub" text="订阅(实验性)" w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
     </vertical>
@@ -71,7 +70,7 @@ let th = null;
 
 //浏览
 window.startLL.click(() => {
-    let ss = "./xxqg_v3.1.0(无UI).js";
+    let ss = "./xxqg_v3.1.3.js";
     startTh(ss);
 });
 //收藏评论分享
@@ -87,11 +86,6 @@ window.startDT.click(() => {
 //每日答题
 window.startMR.click(() => {
     let ss = "./dailyAnswer.js";
-    startTh(ss);
-});
-// 订阅
-window.sub.click(() => {
-    let ss = "./subscribe.js";
     startTh(ss);
 });
 
