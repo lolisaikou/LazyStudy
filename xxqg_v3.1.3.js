@@ -619,7 +619,6 @@ function sub() {
 //主函数
 function main() {
     start_app();//启动app
-    sub();
     var start = new Date().getTime();//程序开始时间
     getScores();//获取积分
     if (myScores['本地频道'] != 1) {
@@ -630,6 +629,9 @@ function main() {
     }
     if (rTime != 0) {
         listenToRadio();//听电台广播
+    }
+    if (myScores['订阅'] != 2) {
+        sub();//订阅
     }
     var r_start = new Date().getTime();//广播开始时间
     articleStudy();//学习文章，包含点赞、分享和评论
