@@ -290,19 +290,23 @@ function articleStudy() {
             //获取当前正在阅读的文章标题
             var currentNewsTitle = ""
             if (textContains("来源").exists()) { // 有时无法获取到 来源
-                currentNewsTitle = textContains("来源").findOne().parent().child(0).text();
+                currentNewsTitle = textContains("来源").findOne().parent().children()[0].text();
             } else if (textContains("作者").exists()) {
-                currentNewsTitle = descContains("作者").findOne().parent().child(0).text();
+                currentNewsTitle = textContains("作者").findOne().parent().children()[0].text();
+            } else if (descContains("来源").exists()) {
+                currentNewsTitle = descContains("来源").findOne().parent().children()[0].desc();
+            } else if (descContains("作者").exists()) {
+                currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
             } else {
                 console.log("无法定位文章标题,即将退出并阅读下一篇")
-                t++;
+                // t++;
                 back();
                 delay(2);
                 continue;
             }
             if (currentNewsTitle == "") {
                 console.log("标题为空,即将退出并阅读下一篇")
-                t++;
+                // t++;
                 back();
                 delay(2);
                 continue;
@@ -311,10 +315,10 @@ function articleStudy() {
             if (flag) {
                 //已经存在，表明阅读过了
                 console.info("该文章已经阅读过，即将退出并阅读下一篇");
-                t++;
+                // t++;
                 back();
                 delay(2);
-                continue;
+                break;
             } else {
                 //没阅读过，添加到数据库
                 insertLearnedArticle(currentNewsTitle, date_string);

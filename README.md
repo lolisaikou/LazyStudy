@@ -10,7 +10,7 @@
 
 # 懒人学习
 
-一款基于auto.js，安卓自动学习脚本，支持看文章视频、收藏分享评论、挑战答题和其他答题。
+一款基于auto.js，安卓自动学习脚本，支持看文章视频、收藏分享评论、挑战答题（不再支持其他答题）。
 
 [release下载](https://github.com/lolisaikou/LazyStudy/releases/)
 
@@ -31,7 +31,7 @@
 - 2020.06.19  
         完全依靠[ivanwhaf](https://github.com/ivanwhaf/xxqg-helper)的脚本，恢复了使用  
         修复了大部分功能无法使用的问题  
-        <font color=red>每日答题功能不能做每周和专项答题了</font>  
+        **每日答题功能不能做每周和专项答题了**  
         挑战答题答错会自动重新挑战，而且增加了限制，每日最多10题，达到自动停止  
         每日答题答够十题也会自动返回了  
         每日阅读的文章自动添加到数据库，重复阅读会自动返回，感谢[wanghuisenior](https://github.com/wanghuisenior)  
@@ -81,11 +81,10 @@
 - 2019.11.21  
         发布    
 
-<font size=5>**特别感谢**</font>  
-<font size=1 color=gray>以下排名不分先后</font>
-----
-
-[**lgpersonal**](https://github.com/lgpersonal/)  
-[**kessil**](https://github.com/kessil/AutoXue)  
-[**ivanwhaf**](https://github.com/ivanwhaf/xxqg-helper)  
-[**studyhelperhelper**](https://github.com/studyhelperhelper/studyhelper)  
+**特别感谢**
+--
+以下排名不分先后  
+>[**lgpersonal**](https://github.com/lgpersonal/)  
+>[**kessil**](https://github.com/kessil/AutoXue)  
+>[**ivanwhaf**](https://github.com/ivanwhaf/xxqg-helper)  
+>[**studyhelperhelper**](https://github.com/studyhelperhelper/studyhelper)  
