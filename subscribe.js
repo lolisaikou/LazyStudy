@@ -14,7 +14,6 @@ function main() {
     click("添加");
     sleep(random(1000, 2000));
     var i = 0;
-    var sub = 0
     while (i < 2) {
         var object = desc("订阅").find();
         if (!object.empty()) {
@@ -33,16 +32,31 @@ function main() {
                 }
             })
         } else if (text("你已经看到我的底线了").exists()) {
-            if (sub == 0) {
-                sub++;
-                click("学习平台", 0)
-                console.log("没有可订阅的强国号了，尝试订阅学习平台。");
-                sleep(2000);
-                continue;
-            } else {
-                console.error("没有可以订阅的平台了!");
+            click("学习平台", 0)
+            console.log("没有可订阅的强国号了，尝试订阅学习平台。");
+            sleep(2000);
+            if (!object.empty()) {
+                // 遍历点赞图标
+                object.forEach(function (currentValue, index) {
+                    // currentValue:点赞按钮           
+                    if (currentValue && i < 2) {
+                        var like = currentValue.parent()
+                        if (like.click()) {
+                            console.log("订阅成功");
+                            i++;
+                            sleep(random(1000, 2000)); //随机延时
+                        } else {
+                            console.error("订阅失败");
+                        }
+                    }
+                })
+            } else if (text("你已经看到我的底线了").exists()) {
+                console.log("没有可订阅的强国号了,退出!!!")
                 break;
+            } else {
+                swipe(x, h1, x, h2, 500);
             }
+            break;
         }
         else {
             swipe(x, h1, x, h2, 500);
@@ -51,5 +65,5 @@ function main() {
     back();
     sleep(random(1000, 2000));
 }
-main();
-// module.exports = main;
+
+module.exports = main;

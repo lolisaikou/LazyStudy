@@ -574,6 +574,6 @@ function main() {
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
 }
-main()
-// module.exports = main;
+
+module.exports = main;
 

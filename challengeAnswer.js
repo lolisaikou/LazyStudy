@@ -62,7 +62,7 @@ function indexFromChar(str) {
  * @return: null
  */
 function challengeQuestionLoop(conNum) {
-    if (conNum >= qCount)//答题次数足够退出，每轮5次
+    if (conNum >= qCount || allCount >= 10)//答题次数足够退出，每轮5次
     {
         let listArray = className("ListView").findOnce().children();//题目选项列表
         let i = random(0, listArray.length - 1);
@@ -70,14 +70,6 @@ function challengeQuestionLoop(conNum) {
         listArray[i].child(0).click();//随意点击一个答案
         console.log("------------");
         return;
-    }
-    if (allCount >= 10) {
-        let listArray = className("ListView").findOnce().children();//题目选项列表
-        let i = random(0, listArray.length - 1);
-        console.info("今天答题次数已够，随机点击一个答案!");
-        listArray[i].child(0).click();//随意点击一个答案
-        console.log("------------");
-        console.info("挑战答题结束！返回积分界面！");
     }
     if (className("ListView").exists()) {
         var question = className("ListView").findOnce().parent().child(0).text();
@@ -164,19 +156,11 @@ function challengeQuestion() {
     let lNum = 1;//轮数
     while (true) {
         challengeQuestionLoop(conNum);
-        if (allCount >= 10) {
-            back();
-            delay(2);
-            back();
-            delay(2);
-            back();
-            break;
-        }
         delay(randomNum(3, 7));
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
             "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists())//遇到❌号，则答错了,不再通过结束本局字样判断
         {
-            if (lNum >= lCount && conNum >= qCount) {
+            if (lNum >= lCount && allCount >= 10) {
                 console.log("挑战答题结束！返回积分界面！");
                 back();
                 delay(1);
@@ -191,7 +175,7 @@ function challengeQuestion() {
                 delay(1);
                 text("再来一局").click()
                 delay(4);
-                if (conNum >= qCount) {
+                if (allCount >= qCount) {
                     lNum++;
                 }
                 conNum = 0;
@@ -213,7 +197,7 @@ function main() {
     console.hide()
     allCount = 0;
 }
-main()
-// module.exports = main;
+
+module.exports = main;
 
 

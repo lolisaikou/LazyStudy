@@ -9,6 +9,7 @@ let window = floaty.window(
         <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="sub" text="订阅(实验性)" w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
     </vertical>
@@ -16,7 +17,7 @@ let window = floaty.window(
 
 let deviceWidth = device.width;
 let deviceHeight = device.height;
-window.setPosition(deviceWidth * 0.7, deviceHeight*0.4);
+window.setPosition(deviceWidth * 0.7, deviceHeight * 0.4);
 setInterval(() => {
 }, 1000);
 
@@ -88,6 +89,12 @@ window.startMR.click(() => {
     let ss = "./dailyAnswer.js";
     startTh(ss);
 });
+// 订阅
+window.sub.click(() => {
+    let ss = "./subscribe.js";
+    startTh(ss);
+});
+
 //停止
 window.stop.click(() => {
     if (th == null) {
@@ -102,8 +109,8 @@ window.stop.click(() => {
     }
 });
 
-function startTh(fileStr){
-    var ss=fileStr;
+function startTh(fileStr) {
+    var ss = fileStr;
     if (th == null) {
         th = threads.start(function () {
             toastLog(" 开启线程");
