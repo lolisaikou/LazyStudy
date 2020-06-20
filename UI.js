@@ -305,7 +305,7 @@ ui.daochu.click(() => {
 ui.daoru.click(() => {
     dialogs.build({
         title: "提示",
-        content: "请确认文件已经放在\n/sdcard/Download文件夹下\n导入后会删除导出的题库",
+        content: "请确认文件已经放在\n/sdcard/Download文件夹下\n导入后会删除导出的题库！！\n如果需要请先备份！！",
         positive: "确定",
         negative: "取消",
     }).on("positive", copy)
@@ -313,5 +313,6 @@ ui.daoru.click(() => {
     function copy() {
         files.copy("/sdcard/Download/tiku.db", path);
         toastLog("导入成功！");
+        files.remove("/sdcard/Download/tiku.db")
     }
 });

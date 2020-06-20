@@ -1,5 +1,5 @@
+## 当前程序版本：2.5.8  
 # 关于本脚本
-
 因原作者将脚本被删除，这里只能依靠本人能力和[ivanwhaf](https://github.com/ivanwhaf/xxqg-helper)的脚本更新  
 
 # 软件界面

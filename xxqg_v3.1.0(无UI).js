@@ -282,7 +282,6 @@ function articleStudy() {
     var zt_flag = false;//判断进入专题界面标志
     var fail = 0;//点击失败次数
     var date_string = getTodayDateString();//获取当天日期字符串
-
     for (var i = 0, t = 0; i < aCount;) {
         if (click(date_string, t) == true) {//如果点击成功则进入文章页面,不成功意味着本页已经到底,要翻页
             delay(5);
@@ -299,14 +298,14 @@ function articleStudy() {
                 currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
             } else {
                 console.log("无法定位文章标题,即将退出并阅读下一篇")
-                // t++;
+                t++;
                 back();
                 delay(2);
                 continue;
             }
             if (currentNewsTitle == "") {
                 console.log("标题为空,即将退出并阅读下一篇")
-                // t++;
+                t++;
                 back();
                 delay(2);
                 continue;
@@ -315,10 +314,10 @@ function articleStudy() {
             if (flag) {
                 //已经存在，表明阅读过了
                 console.info("该文章已经阅读过，即将退出并阅读下一篇");
-                // t++;
+                t++;
                 back();
                 delay(2);
-                break;
+                continue;
             } else {
                 //没阅读过，添加到数据库
                 insertLearnedArticle(currentNewsTitle, date_string);
@@ -376,7 +375,7 @@ function articleStudy() {
             //     console.warn("首页没有找到当天文章，即将学习昨日新闻!");
             //     continue;
             // }
-            if (fail > 8) {//连续翻几页没有点击成功则认为今天的新闻还没出来，学习昨天的
+            if (fail >= aCount) {//连续翻几页没有点击成功则认为今天的新闻还没出来，学习昨天的
                 date_string = getYestardayDateString();
                 console.warn("没有找到当天文章，即将学习昨日新闻!");
                 continue;
@@ -575,6 +574,6 @@ function main() {
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
 }
-
-module.exports = main;
+main()
+// module.exports = main;
 
