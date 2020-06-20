@@ -59,6 +59,10 @@ ui.layout(
                             <text id="answerLabel" text="答案" />
                             <input id="answer" w="*" h="auto" />
                         </horizontal>
+                        <horizontal gravity="center">
+                            <button id="daochu" text="导出题库" />
+                            <button id="daoru" text="导入题库" />
+                        </horizontal>
                     </vertical>
                 </frame>
                 <frame>
@@ -289,5 +293,25 @@ ui.updateTikuNet.click(() => {
             });
             alert(resultStr);
         });
+    }
+});
+
+var path = files.path("tiku.db")
+ui.daochu.click(() => {
+    files.copy(path, "/sdcard/Download/tiku.db");
+    toastLog("已将题库复制到/sdcard/Download文件夹下");
+});
+
+ui.daoru.click(() => {
+    dialogs.build({
+        title: "提示",
+        content: "请确认文件已经放在\n/sdcard/Download文件夹下\n导入后会删除导出的题库",
+        positive: "确定",
+        negative: "取消",
+    }).on("positive", copy)
+        .show();
+    function copy() {
+        files.copy("/sdcard/Download/tiku.db", path);
+        toastLog("导入成功！");
     }
 });
