@@ -554,6 +554,9 @@ function getScores() {
 @return: null
 */
 function sub() {
+    while (!desc("学习").exists());//等待加载出主页
+    desc("学习").click();//点击主页正下方的"学习"按钮
+    delay(2);
     h = device.height;//屏幕高
     w = device.width;//屏幕宽
     x = (w / 3) * 2;//横坐标2分之3处
@@ -627,11 +630,11 @@ function main() {
     if (myScores['本地频道'] != 1) {
         localChannel();//本地频道
     }
-    if (vCount != 0) {
-        videoStudy_news();//看视频
-    }
     if (rTime != 0) {
         listenToRadio();//听电台广播
+    }
+    if (vCount != 0) {
+        videoStudy_news();//看视频
     }
     var r_start = new Date().getTime();//广播开始时间
     articleStudy();//学习文章，包含点赞、分享和评论
