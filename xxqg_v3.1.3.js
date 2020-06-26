@@ -397,6 +397,9 @@ function articleStudy() {
  * @return: null
  */
 function videoStudy_news() {
+    delay(1)
+    desc("学习").click();
+    delay(2)
     click("电视台");
     delay(1)
     click("联播频道");
@@ -485,6 +488,8 @@ function start_app() {
  * @return: null
  */
 function localChannel() {
+    delay(1)
+    desc("学习").click();
     while (!desc("学习").exists());//等待加载出主页
     console.log("点击本地频道");
     if (text("新思想").exists()) {
@@ -514,7 +519,7 @@ function getScores() {
         } else if (text("积分").exists()) {
             text("积分").findOnce().parent().child(1).click();
         }
-        delay(1);
+        delay(2);
     }
 
     let err = false;
@@ -537,7 +542,9 @@ function getScores() {
     aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;
+    asub = 2 - myScores["订阅"];
 
+    console.log('订阅：' + asub.toString() + '个')
     console.log('剩余文章：' + aCount.toString() + '篇')
     console.log('剩余每篇文章学习时长：' + aTime.toString() + '秒')
     console.log('剩余视频：' + vCount.toString() + '个')
@@ -554,8 +561,7 @@ function getScores() {
 @return: null
 */
 function sub() {
-    while (!desc("学习").exists());//等待加载出主页
-    desc("学习").click();//点击主页正下方的"学习"按钮
+    desc("学习").click();
     delay(2);
     h = device.height;//屏幕高
     w = device.width;//屏幕宽
@@ -563,9 +569,9 @@ function sub() {
     h1 = (h / 6) * 5;//纵坐标6分之5处
     h2 = (h / 6);//纵坐标6分之1处
     click("订阅");
-    sleep(random(1000, 2000));
+    delay(2);
     click("添加");
-    sleep(random(1000, 2000));
+    delay(2);
     var i = 0;
     while (i < 2) {
         var object = desc("订阅").find();
@@ -578,7 +584,7 @@ function sub() {
                     if (like.click()) {
                         console.log("订阅成功");
                         i++;
-                        sleep(random(1000, 2000)); //随机延时
+                        delay(2);
                     } else {
                         console.error("订阅失败");
                     }
@@ -587,17 +593,17 @@ function sub() {
         } else if (text("你已经看到我的底线了").exists()) {
             click("学习平台", 0)
             console.log("没有可订阅的强国号了，尝试订阅学习平台。");
-            sleep(2000);
+            delay(2);
             if (!object.empty()) {
                 // 遍历点赞图标
-                object.forEach(function (currentValue, index) {
+                object.forEach(function (currentValue) {
                     // currentValue:点赞按钮           
                     if (currentValue && i < 2) {
                         var like = currentValue.parent()
                         if (like.click()) {
                             console.log("订阅成功");
                             i++;
-                            sleep(random(1000, 2000)); //随机延时
+                            delay(2);
                         } else {
                             console.error("订阅失败");
                         }
@@ -608,20 +614,22 @@ function sub() {
                 break;
             } else {
                 swipe(x, h1, x, h2, 500);
+                delay(0.5);
             }
-            break;
         }
         else {
             swipe(x, h1, x, h2, 500);
+            delay(0.5);
         }
     }
     back();
-    sleep(random(1000, 2000));
+    delay(2);
 }
 
 //主函数
 function main() {
     start_app();//启动app
+    var path = files.path("tiku.db");
     var start = new Date().getTime();//程序开始时间
     getScores();//获取积分
     if (myScores['订阅'] != 2) {
@@ -646,6 +654,8 @@ function main() {
     radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
+    files.copy(path, "/sdcard/Download/tiku.db");
+    console.warn("自动备份题库到/sdcard/Download!!!");
 }
 
 module.exports = main;
