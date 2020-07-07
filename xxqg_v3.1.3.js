@@ -590,7 +590,7 @@ function sub() {
 //主函数
 function main() {
     start_app();//启动app
-    var path = files.path("tiku.db");
+    var path = files.path("list.db");
     var start = new Date().getTime();//程序开始时间
     getScores();//获取积分
     if (myScores['订阅'] != 2) {
