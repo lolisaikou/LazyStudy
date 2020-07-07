@@ -8,52 +8,12 @@ importClass(android.database.sqlite.SQLiteDatabase);
 
 /********************************************数据库控制函数开始***********************************************/
 /**
- * @description: 从数据库中搜索答案
- * @param: question 问题
- * @return: answer 答案
- */
-function getAnswerFromDB(question) {
-    var dbName = "tiku.db";
-    var path = files.path(dbName);
-    if (!files.exists(path)) {
-        //files.createWithDirs(path);
-        console.error("未找到题库!请将题库放置与js同一目录下");
-        return '';
-    }
-
-    var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-    sql = "SELECT answer FROM tiku WHERE question LIKE '" + question + "%'"
-    var cursor = db.rawQuery(sql, null);
-    if (cursor.moveToFirst()) {
-        var answer = cursor.getString(0);
-        cursor.close();
-        return answer;
-    } else {
-        // console.error("题库中未找到答案");
-        //    cursor.close();
-        //    return '';
-        console.error("题库中未找到答案,从tikuNet获取");
-        cursor.close();
-        var c1 = db.rawQuery("SELECT answer FROM tikuNet WHERE question LIKE '" + question + "%'", null);
-        if (c1.moveToFirst()) {
-            var a = c1.getString(0);
-            c1.close();
-            console.log("tikuNet答案：", a);
-            return a;
-        } else {
-            console.log("tikuNet中未获取到答案");
-            return '';
-        }
-    }
-}
-
-/**
- * @description: 增加或更新数据库
+ * @description: 获取的文章题目写入数据库
  * @param: title,date
  * @return: res
  */
 function getLearnedArticle(title, date) {
-    var dbName = "tiku.db";
+    var dbName = "list.db";
     //文件路径
     var path = files.path(dbName);
     //确保文件存在
@@ -80,12 +40,8 @@ function getLearnedArticle(title, date) {
 }
 
 function insertLearnedArticle(title, date) {
-    var dbName = "tiku.db";
+    var dbName = "list.db";
     var path = files.path(dbName);
-    if (!files.exists(path)) {
-        //files.createWithDirs(path);
-        console.error("未找到题库!请将题库放置与js同一目录下");
-    }
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
     var createTable = "\
     CREATE TABLE IF NOt EXISTS learnedArticles(\
@@ -563,23 +519,20 @@ function getScores() {
 function sub() {
     desc("学习").click();
     delay(2);
-    h = device.height;//屏幕高
-    w = device.width;//屏幕宽
-    x = (w / 3) * 2;//横坐标2分之3处
-    h1 = (h / 6) * 5;//纵坐标6分之5处
-    h2 = (h / 6);//纵坐标6分之1处
     click("订阅");
     delay(2);
     click("添加");
     delay(2);
+    var sublist = className("ListView").findOnce(0);
     var i = 0;
     while (i < 2) {
         var object = desc("订阅").find();
         if (!object.empty()) {
             // 遍历点赞图标
-            object.forEach(function (currentValue, index) {
+            object.forEach(function (currentValue) {
                 // currentValue:点赞按钮           
                 if (currentValue && i < 2) {
+
                     var like = currentValue.parent()
                     if (like.click()) {
                         console.log("订阅成功");
@@ -591,35 +544,43 @@ function sub() {
                 }
             })
         } else if (text("你已经看到我的底线了").exists()) {
-            click("学习平台", 0)
-            console.log("没有可订阅的强国号了，尝试订阅学习平台。");
+            console.log("尝试订阅")
+            back();
+            delay(1);
+            click("添加");
+            delay(1);
+            click("学习平台", 0);
             delay(2);
-            if (!object.empty()) {
-                // 遍历点赞图标
-                object.forEach(function (currentValue) {
-                    // currentValue:点赞按钮           
-                    if (currentValue && i < 2) {
-                        var like = currentValue.parent()
-                        if (like.click()) {
-                            console.log("订阅成功");
-                            i++;
-                            delay(2);
-                        } else {
-                            console.error("订阅失败");
+            var sublist = className("ListView").findOnce(1);
+            while (i < 2) {
+                if (!object.empty()) {
+                    // 遍历点赞图标
+                    object.forEach(function (currentValue) {
+                        if (currentValue && i < 2) {
+                            if (like.click()) {
+                                console.log("订阅成功");
+                                i++;
+                                delay(2);
+                            } else {
+                                console.error("订阅失败");
+                            }
                         }
-                    }
-                })
-            } else if (text("你已经看到我的底线了").exists()) {
-                console.log("没有可订阅的强国号了,退出!!!")
-                break;
-            } else {
-                swipe(x, h1, x, h2, 500);
-                delay(0.5);
+                    })
+                } else if (text("你已经看到我的底线了").exists()) {
+                    console.log("没有可订阅的强国号了,退出!!!")
+                    t++;// 如果全部都被订阅t++,让父循环结束
+                    break;
+                } else {
+                    delay(1);
+                    sublist.scrollForward();
+                }
             }
-        }
-        else {
-            swipe(x, h1, x, h2, 500);
+        } else {
             delay(0.5);
+            sublist.scrollForward();
+        }
+        if (t > 1) {
+            break;
         }
     }
     back();
@@ -638,11 +599,11 @@ function main() {
     if (myScores['本地频道'] != 1) {
         localChannel();//本地频道
     }
-    if (rTime != 0) {
-        listenToRadio();//听电台广播
-    }
     if (vCount != 0) {
         videoStudy_news();//看视频
+    }
+    if (rTime != 0) {
+        listenToRadio();//听电台广播
     }
     var r_start = new Date().getTime();//广播开始时间
     articleStudy();//学习文章，包含点赞、分享和评论
@@ -654,8 +615,8 @@ function main() {
     radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
-    files.copy(path, "/sdcard/Download/tiku.db");
-    console.warn("自动备份题库到/sdcard/Download!!!");
+    files.copy(path, "/sdcard/Download/list.db");
+    console.warn("自动备份已学文章列表到/sdcard/Download!!!");
 }
 
 module.exports = main;

@@ -60,8 +60,8 @@ ui.layout(
                             <input id="answer" w="*" h="auto" />
                         </horizontal>
                         <horizontal gravity="center">
-                            <button id="daochu" text="导出题库" />
-                            <button id="daoru" text="导入题库" />
+                            <button id="daochu" text="导出列表" />
+                            <button id="daoru" text="导入列表" />
                         </horizontal>
                     </vertical>
                 </frame>
@@ -296,23 +296,28 @@ ui.updateTikuNet.click(() => {
     }
 });
 
-var path = files.path("tiku.db")
+var path = files.path("list.db")
 ui.daochu.click(() => {
-    files.copy(path, "/sdcard/Download/tiku.db");
-    toastLog("已将题库复制到/sdcard/Download文件夹下");
+    dialogs.build({
+        title: "提示",
+        content: "这个操作会备份已学文章的数据库到\n/sdcard/Download文件夹下",
+        positive: "确定",
+    }).show();
+    files.copy(path, "/sdcard/Download/list.db");
+    toastLog("已将数据库复制到/sdcard/Download文件夹下");
 });
 
 ui.daoru.click(() => {
     dialogs.build({
         title: "提示",
-        content: "请确认文件已经放在\n/sdcard/Download文件夹下\n导入后会删除导出的题库！！\n如果需要请先备份！！",
+        content: "请确认文件已经放在\n/sdcard/Download文件夹下\n导入后会删除导出的文件！！\n如果需要请先备份！！",
         positive: "确定",
         negative: "取消",
     }).on("positive", copy)
         .show();
     function copy() {
-        files.copy("/sdcard/Download/tiku.db", path);
+        files.copy("/sdcard/Download/list.db", path);
         toastLog("导入成功！");
-        files.remove("/sdcard/Download/tiku.db")
+        files.remove("/sdcard/Download/list.db")
     }
 });

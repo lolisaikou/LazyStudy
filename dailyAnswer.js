@@ -347,8 +347,8 @@ function dailyQuestionLoop() {
 function dailyQuestion() {
     let dlNum = 0;//每日答题轮数
     while (true) {
+        delay(1)
         dailyQuestionLoop();
-        delay(0.5)
         if (text("再来一组").exists()) {
             delay(2);
             dlNum++;
@@ -370,8 +370,8 @@ function main() {
     console.setPosition(0, device.height / 2);
     console.show();
     console.warn("这个功能只能做每日答题哦，其他答题会出错的");
-    dailyQuestion();
     delay(3);
+    dailyQuestion();
     console.hide();
 }
 

@@ -14,7 +14,8 @@ function delay(seconds) {
 
 /**
  * @description: 生成从minNum到maxNum的随机数
- * @param: null
+ * @param: minNum-较小的数
+ * @param: maxNum-较大的数
  * @return: null
  */
 function randomNum(minNum, maxNum) {
@@ -156,7 +157,7 @@ function challengeQuestion() {
     let lNum = 1;//轮数
     while (true) {
         challengeQuestionLoop(conNum);
-        delay(randomNum(3, 7));
+        delay(randomNum(3, 6));
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
             "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists())//遇到❌号，则答错了,不再通过结束本局字样判断
         {
@@ -172,13 +173,20 @@ function challengeQuestion() {
                 delay(3);//等待5秒才能开始下一轮
                 back();
                 //desc("结束本局").click();//有可能找不到结束本局字样所在页面控件，所以直接返回到上一层
-                delay(1);
+                delay(2);
                 text("再来一局").click()
                 delay(4);
                 if (allCount >= qCount) {
                     lNum++;
                 }
-                conNum = 0;
+                if (conNum < 5 && allCount < 5) {
+                    allCount = 0;
+                    conNum = 0;
+                }
+                else {
+                    allCount = 5;
+                    conNum = 5;
+                }
             }
         }
         else//答对了
@@ -192,8 +200,8 @@ function challengeQuestion() {
 function main() {
     console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
     console.show();
-    challengeQuestion();
     delay(3);
+    challengeQuestion();
     console.hide()
     allCount = 0;
 }
