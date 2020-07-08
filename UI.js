@@ -18,6 +18,7 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
+                    <text textSize="16sp" textColor="red" text="v2.6.2" />
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>
                 <frame>
@@ -60,8 +61,8 @@ ui.layout(
                             <input id="answer" w="*" h="auto" />
                         </horizontal>
                         <horizontal gravity="center">
-                            <button id="daochu" text="导出列表" />
-                            <button id="daoru" text="导入列表" />
+                            <button id="daochu" text="导出文章列表" />
+                            <button id="daoru" text="导入文章列表" />
                         </horizontal>
                     </vertical>
                 </frame>

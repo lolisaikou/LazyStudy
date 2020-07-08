@@ -200,7 +200,7 @@ function challengeQuestion() {
 function main() {
     console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
     console.show();
-    delay(3);
+    delay(1);
     challengeQuestion();
     console.hide()
     allCount = 0;

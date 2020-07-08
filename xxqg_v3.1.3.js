@@ -525,6 +525,7 @@ function sub() {
     delay(2);
     var sublist = className("ListView").findOnce(0);
     var i = 0;
+    var t = 0;
     while (i < 2) {
         var object = desc("订阅").find();
         if (!object.empty()) {
@@ -579,7 +580,7 @@ function sub() {
             delay(0.5);
             sublist.scrollForward();
         }
-        if (t > 1) {
+        if (t >= 1) {
             break;
         }
     }

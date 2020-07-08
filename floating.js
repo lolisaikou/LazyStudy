@@ -8,7 +8,7 @@ let window = floaty.window(
         <button id="startLL" text=" 开始浏览 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="startMR" text=" 每日答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="startMR" text=" 每日答题等 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
     </vertical>

@@ -63,6 +63,7 @@ function getFitbQuestion() {
     var findBlank = false;
     var blankCount = 0;
     var blankNumStr = "";
+    var i = 0;
     questionCollections.children().forEach(item => {
         if (item.className() != "android.widget.EditText") {
             if (item.text() != "") {//题目段
@@ -75,7 +76,8 @@ function getFitbQuestion() {
             }
             else {
                 findBlank = true;
-                blankCount = (className("EditText").findOnce().parent().childCount() - 1);
+                blankCount = (className("EditText").findOnce(i).parent().childCount() - 1);
+                i++;
             }
         }
     });
@@ -269,7 +271,7 @@ function dailyQuestionLoop() {
     }
     var answer = ansTiku.replace(/(^\s*)|(\s*$)/g, "");
 
-    if (text("填空题").exists()) {
+    if (textStartsWith("填空题").exists()) {
         if (answer == "") {
             var tipsStr = getTipsStr();
             answer = getAnswerFromTips(questionArray, tipsStr);
@@ -290,7 +292,7 @@ function dailyQuestionLoop() {
             }
         }
     }
-    else if (text("多选题").exists() || text("单选题").exists()) {
+    else if (textStartsWith("多选题").exists() || textStartsWith("单选题").exists()) {
         if (answer == "") {
             var tipsStr = getTipsStr();
             answer = clickByTips(tipsStr);
@@ -306,32 +308,15 @@ function dailyQuestionLoop() {
     if (text("确定").exists()) {
         text("确定").click();
         delay(0.5);
-    }
-    else {
+    } else if (text("下一题").exists()){
+        click("下一题");
+        delay(0.5);
+    } else if (text("完成").exists()) {
+        text("完成").click();
+        delay(0.5);
+    } else {
         console.warn("未找到右上角确定按钮控件，根据坐标点击");
         click(device.width * 0.85, device.height * 0.06);//右上角确定按钮，根据自己手机实际修改
-    }
-
-    if (text("下一题").exists()) {
-        if (text("下一题").exists()) {
-            text("下一题").click();
-            delay(0.5);
-        }
-        else {
-            console.warn("未找到右上角下一题按钮控件，根据坐标点击");
-            click(device.width * 0.85, device.height * 0.06);//右上角确定按钮，根据自己手机实际修改
-        }
-    }
-
-    if (text("完成").exists()) {
-        if (text("完成").exists()) {
-            text("完成").click();
-            delay(0.5);
-        }
-        else {
-            console.warn("未找到右上角完成按钮控件，根据坐标点击");
-            click(device.width * 0.85, device.height * 0.06);//右上角确定按钮，根据自己手机实际修改
-        }
     }
 
     checkAndUpdate(question, ansTiku, answer);
@@ -349,7 +334,17 @@ function dailyQuestion() {
     while (true) {
         delay(1)
         dailyQuestionLoop();
-        if (text("再来一组").exists()) {
+        if (text("再练一次").exists()) {
+            console.log("每周答题结束！")
+            text("返回").click(); delay(2);
+            back();
+            break;
+        } else if (text("查看解析").exists()) {
+            console.log("专项答题结束！")
+            back();delay(0.5);
+            back();delay(0.5);
+            break;
+        } else if (text("再来一组").exists()) {
             delay(2);
             dlNum++;
             if (!text("领取奖励已达今日上限").exists()) {
@@ -359,7 +354,7 @@ function dailyQuestion() {
             }
             else {
                 console.log("每日答题结束！")
-                text("返回").click(); delay(0.5);
+                text("返回").click(); delay(2);
                 break;
             }
         }
@@ -369,11 +364,12 @@ function dailyQuestion() {
 function main() {
     console.setPosition(0, device.height / 2);
     console.show();
-    console.warn("这个功能只能做每日答题哦，其他答题会出错的");
-    delay(3);
+    delay(1);
     dailyQuestion();
     console.hide();
 }
-
-
-module.exports = main;
+// 双填空需要两个空字数相等
+// 双填空测试四月第二周（正常）
+// 复杂填空民法典专项一（第三题会出错）
+main()
+// module.exports = main;
