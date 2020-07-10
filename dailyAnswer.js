@@ -370,6 +370,6 @@ function main() {
 }
 // 双填空需要两个空字数相等
 // 双填空测试四月第二周（正常）
-// 复杂填空民法典专项一（第三题会出错）
-main()
-// module.exports = main;
+// 复杂填空民法典专项一（已支持）
+// main() // 调试完记得注释掉
+module.exports = main;

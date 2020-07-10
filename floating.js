@@ -4,9 +4,7 @@ auto.waitFor();
 let window = floaty.window(
     <vertical>
         <button id="move" text=" 移动 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="switchXX" text=" 切到 强国 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startLL" text=" 开始浏览 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题等 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
@@ -48,17 +46,6 @@ window.move.setOnTouchListener(function (view, event) {
     return true;
 });
 
-window.switchXX.click(() => {
-    toastLog(" 切换到学习强国APP...");
-    if (!launchApp("学习强国"))//启动学习强国app
-    {
-        console.error("找不到学习强国App!");
-        return;
-    }
-});
-
-
-
 // 这个函数是对应悬浮窗的退出
 window.exit.click(() => {
     toastLog(" 退出！");
@@ -70,12 +57,7 @@ let th = null;
 
 //浏览
 window.startLL.click(() => {
-    let ss = "./xxqg_v3.1.3.js";
-    startTh(ss);
-});
-//收藏评论分享
-window.startSFP.click(() => {
-    let ss = "./collectCommentShare.js";
+    let ss = "./all.js";
     startTh(ss);
 });
 //挑战答题
