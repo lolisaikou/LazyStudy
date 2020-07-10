@@ -13,7 +13,7 @@
 - 更新网络题库：从网络同步最近题库，过滤后入tikuNet表  
 # 懒人学习
 
-一款基于auto.js，安卓自动学习脚本，支持看文章视频、收藏分享评论、挑战答题（不再支持其他答题）。  
+一款基于auto.js，安卓自动学习脚本，支持看文章视频、收藏分享评论、挑战答题、每日答题、每周答题。  
 本项目仅供autojs交流学习，请勿用于商业
 
 [release下载](https://github.com/lolisaikou/LazyStudy/releases/)
