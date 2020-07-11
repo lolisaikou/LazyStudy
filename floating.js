@@ -57,7 +57,7 @@ let th = null;
 
 //浏览
 window.startLL.click(() => {
-    let ss = "./all.js";
+    let ss = "./xxqg_v3.1.3(fix).js";
     startTh(ss);
 });
 //挑战答题
