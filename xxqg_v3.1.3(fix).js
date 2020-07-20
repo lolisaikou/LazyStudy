@@ -287,10 +287,11 @@ function articleStudy() {
             if (text("展开").exists())//如果存在“展开”则认为进入了文章栏中的视频界面需退出
             {
                 console.warn("进入了视频界面，退出并进下一篇文章!");
-                console.info("因为广播被打断，重新收听广播...");
                 t++;
                 back();
                 while (!desc("学习").exists());
+                desc("学习").click();
+                console.info("因为广播被打断，重新收听广播...");
                 delay(0.5);
                 click("电台");
                 delay(1);
@@ -1203,15 +1204,15 @@ function sub() {
     delay(2);
     click("添加");
     delay(2);
-    var sublist = className("ListView").findOnce(0);
+    let sublist = className("ListView").findOnce(0);
     var i = 0;
     var t = 0;
     while (i < asub) {
-        var object = desc("订阅").find();
+        let object = desc("订阅").find();
         if (!object.empty()) {
             object.forEach(function (currentValue) {
                 if (currentValue && i < asub) {
-                    var like = currentValue.parent()
+                    let like = currentValue.parent()
                     if (like.click()) {
                         console.log("订阅成功");
                         i++;
@@ -1222,21 +1223,20 @@ function sub() {
                 }
             })
         } else if (text("你已经看到我的底线了").exists()) {
-            console.log("尝试订阅")
+            console.log("尝试订阅学习平台")
             back();
             delay(1);
             click("添加");
             delay(1);
             click("学习平台", 0);
             delay(2);
-            var sublist = className("ListView").findOnce(1);
-            var object = desc("订阅").find();
+            let sublist = className("ListView").findOnce(1);
             while (i < asub) {
-                var object = desc("订阅").find();
+                let object = desc("订阅").find();
                 if (!object.empty()) {
                     object.forEach(function (currentValue) {
                         if (currentValue && i < asub) {
-                            var like = currentValue.parent()
+                            let like = currentValue.parent()
                             if (like.click()) {
                                 console.log("订阅成功");
                                 i++;
