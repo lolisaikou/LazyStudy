@@ -313,7 +313,9 @@ function articleStudy() {
                 continue;
             }
             var currentNewsTitle = ""
-            if (textContains("来源").exists()) { // 有时无法获取到 来源
+            if (id("xxqg-article-header").exists()) {
+                currentNewsTitle = id("xxqg-article-header").findOne().child(0).text(); // 最终解决办法
+            } else if (textContains("来源").exists()) {
                 currentNewsTitle = textContains("来源").findOne().parent().children()[0].text();
             } else if (textContains("作者").exists()) {
                 currentNewsTitle = textContains("作者").findOne().parent().children()[0].text();
@@ -321,8 +323,6 @@ function articleStudy() {
                 currentNewsTitle = descContains("来源").findOne().parent().children()[0].desc();
             } else if (descContains("作者").exists()) {
                 currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
-            } else if (id("xxqg-article-header").exists()) {
-                currentNewsTitle = id("xxqg-article-header").findOne().child(0).text(); //最终解决办法
             } else {
                 console.log("无法定位文章标题,即将退出并阅读下一篇")
                 t++;
