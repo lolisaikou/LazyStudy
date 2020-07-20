@@ -8,11 +8,12 @@ importClass(android.database.sqlite.SQLiteDatabase);
 
 /********************************************数据库控制函数开始***********************************************/
 /**
- * @description: 获取的文章题目写入数据库
+ * @description: 读取文章数据库
  * @param: title,date
  * @return: res
  */
 function getLearnedArticle(title, date) {
+    rtitle = title.replace("'", "''");
     var dbName = "list.db";
     //文件路径
     var path = files.path(dbName);
@@ -31,7 +32,7 @@ function getLearnedArticle(title, date) {
     // var cleanTable = "DELETE FROM tikuNet";
     db.execSQL(createTable);
     // db.execSQL(cleanTable);
-    var sql = "SELECT * FROM  learnedArticles WHERE title = '" + title + "' AND date = '" + date + "'";
+    var sql = "SELECT * FROM  learnedArticles WHERE title = '" + rtitle + "' AND date = '" + date + "'";
     var cursor = db.rawQuery(sql, null);
     var res = cursor.moveToFirst();
     cursor.close();
@@ -39,7 +40,13 @@ function getLearnedArticle(title, date) {
     return res;
 }
 
+/**
+ * @description: 获取的文章题目写入数据库
+ * @param: title,date
+ * @return: res
+ */
 function insertLearnedArticle(title, date) {
+    rtitle = title.replace("'", "''");
     var dbName = "list.db";
     var path = files.path(dbName);
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
@@ -50,14 +57,14 @@ function insertLearnedArticle(title, date) {
     );";
     // var cleanTable = "DELETE FROM tikuNet";
     db.execSQL(createTable);
-    var sql = "INSERT INTO learnedArticles VALUES ('" + title + "','" + date + "')";
+    var sql = "INSERT INTO learnedArticles VALUES ('" + rtitle + "','" + date + "')";
     db.execSQL(sql);
     db.close();
 }
 
 /********************************************数据库控制函数结束***********************************************/
 
-
+var asub = 2; //订阅数
 var aCount = 6;//文章默认学习篇数
 var vCount = 6;//小视频默认学习个数
 var cCount = 2;//收藏+分享+评论次数
@@ -66,7 +73,7 @@ var aTime = 103;//每篇文章学习-103秒 103*7≈720秒=12分钟
 var vTime = 15;//每个小视频学习-15秒
 var rTime = 1080;//广播收听-18分钟
 
-var aCatlog = "推荐"//文章学习类别，可自定义修改为“要闻”、“新思想”等
+var aCatlog = files.read("./article.txt");//文章学习类别，可自定义修改为“要闻”、“新思想”等
 
 var myScores = {};//分数
 
@@ -140,13 +147,12 @@ function video_timing_bailing(n, seconds) {
  */
 function video_timing_news(n, seconds) {
     for (var i = 0; i < seconds; i++) {
-        delay(0.5)
+        delay(1);
         while (!textContains("欢迎发表你的观点").exists())//如果离开了联播小视频界面则一直等待
         {
             console.error("当前已离开第" + (n + 1) + "个新闻小视频界面，请重新返回视频");
             delay(2);
         }
-        delay(1);
         console.info("第" + (n + 1) + "个小视频已经观看" + (i + 1) + "秒,剩余" + (seconds - i - 1) + "秒!");
     }
 }
@@ -243,6 +249,43 @@ function articleStudy() {
             delay(5);
             // // delay(10); //等待加载出文章页面，后面判断是否进入了视频文章播放要用到
             //获取当前正在阅读的文章标题
+            let n = 0;
+            while (!textContains("欢迎发表你的观点").exists()) {//如果没有找到评论框则认为没有进入文章界面，一直等待
+                delay(2);
+                console.warn("正在等待加载文章界面...");
+                if (n > 3) {//等待超过3秒则认为进入了专题界面，退出进下一篇文章
+                    console.warn("没找到评论框!该界面非文章界面!");
+                    zt_flag = true;
+                    break;
+                }
+                n++;
+            }
+            if (text("展开").exists()) {//如果存在“展开”则认为进入了文章栏中的视频界面需退出
+                console.warn("进入了视频界面，即将退出并进下一篇文章!");
+                t++;
+                delay(2);
+                if (myScores['视听学习时长'] != 6) {
+                    console.log("因为广播被打断，正在重新收听广播...");
+                    back();
+                    click("电台");
+                    delay(1);
+                    click("最近收听");
+                    delay(2);
+                    back();
+                }
+                while (!desc("学习").exists());
+                desc("学习").click();
+                delay(2);
+                continue;
+            }
+            if (zt_flag == true) {//进入专题页标志
+                console.warn("进入了专题界面，即将退出并进下一篇文章!");
+                t++;
+                back();
+                delay(2);
+                zt_flag = false;
+                continue;
+            }
             var currentNewsTitle = ""
             if (textContains("来源").exists()) { // 有时无法获取到 来源
                 currentNewsTitle = textContains("来源").findOne().parent().children()[0].text();
@@ -252,6 +295,8 @@ function articleStudy() {
                 currentNewsTitle = descContains("来源").findOne().parent().children()[0].desc();
             } else if (descContains("作者").exists()) {
                 currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
+            } else if (id("xxqg-article-header").exists()) {
+                currentNewsTitle = id("xxqg-article-header").findOne().child(0).text(); //最终解决办法
             } else {
                 console.log("无法定位文章标题,即将退出并阅读下一篇")
                 t++;
@@ -277,43 +322,6 @@ function articleStudy() {
             } else {
                 //没阅读过，添加到数据库
                 insertLearnedArticle(currentNewsTitle, date_string);
-            }
-            let n = 0;
-            while (!textContains("欢迎发表你的观点").exists()) {//如果没有找到评论框则认为没有进入文章界面，一直等待
-                delay(2);
-                console.warn("正在等待加载文章界面...");
-                if (n > 3) {//等待超过3秒则认为进入了专题界面，退出进下一篇文章
-                    console.warn("没找到评论框!该界面非文章界面!");
-                    zt_flag = true;
-                    break;
-                }
-                n++;
-            }
-            if (desc("展开").exists()) {//如果存在“展开”则认为进入了文章栏中的视频界面需退出
-                console.warn("进入了视频界面，即将退出并进下一篇文章!");
-                t++;
-                back();
-                delay(2);
-                if (myScores['视听学习时长'] != 6) {
-                    click("电台");
-                    delay(1);
-                    click("最近收听");
-                    console.log("因为广播被打断，正在重新收听广播...");
-                    delay(2);
-                    back();
-                }
-                while (!desc("学习").exists());
-                desc("学习").click();
-                delay(2);
-                continue;
-            }
-            if (zt_flag == true) {//进入专题页标志
-                console.warn("进入了专题界面，即将退出并进下一篇文章!");
-                t++;
-                back();
-                delay(2);
-                zt_flag = false;
-                continue;
             }
             console.log("正在学习第" + (i + 1) + "篇文章,标题：", currentNewsTitle);
             fail = 0;//失败次数清0
@@ -526,14 +534,11 @@ function sub() {
     var sublist = className("ListView").findOnce(0);
     var i = 0;
     var t = 0;
-    while (i < 2) {
+    while (i < asub) {
         var object = desc("订阅").find();
         if (!object.empty()) {
-            // 遍历点赞图标
             object.forEach(function (currentValue) {
-                // currentValue:点赞按钮           
-                if (currentValue && i < 2) {
-
+                if (currentValue && i < asub) {
                     var like = currentValue.parent()
                     if (like.click()) {
                         console.log("订阅成功");
@@ -553,11 +558,13 @@ function sub() {
             click("学习平台", 0);
             delay(2);
             var sublist = className("ListView").findOnce(1);
-            while (i < 2) {
+            var object = desc("订阅").find();
+            while (i < asub) {
+                var object = desc("订阅").find();
                 if (!object.empty()) {
-                    // 遍历点赞图标
                     object.forEach(function (currentValue) {
-                        if (currentValue && i < 2) {
+                        if (currentValue && i < asub) {
+                            var like = currentValue.parent()
                             if (like.click()) {
                                 console.log("订阅成功");
                                 i++;
@@ -577,7 +584,7 @@ function sub() {
                 }
             }
         } else {
-            delay(0.5);
+            delay(1);
             sublist.scrollForward();
         }
         if (t >= 1) {

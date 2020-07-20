@@ -18,7 +18,8 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <text textSize="16sp" textColor="red" text="v2.6.2" />
+                    <text textSize="16sp" textColor="red" text="v2.6.3" />
+                    <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>
                 <frame>
@@ -88,6 +89,24 @@ ui.webview.loadUrl(src);
 //进度条不可见
 ui.run(() => {
     ui.pbar.setVisibility(View.INVISIBLE);
+});
+
+//阅读模式切换
+ui.amsw.click(() => {
+    var amode = files.read("./article.txt");
+    toastLog("当前阅读模式为“" + amode + "”")
+    dialogs.select("请选择文章阅读模式：", ["推荐", "订阅"])
+        .then(i => {
+            if (i == 0) {
+                files.write("./article.txt", "推荐")
+                toastLog("阅读模式已改为推荐！")
+            } else if (i == 1) {
+                files.write("./article.txt", "订阅")
+                toastLog("阅读模式已改为订阅！")
+            } else {
+                toastLog("你没有选择！")
+            }
+        });
 });
 
 //加载悬浮窗
