@@ -333,6 +333,11 @@ function dailyQuestion() {
     let dlNum = 0;//每日答题轮数
     while (true) {
         delay(1)
+        if (!(textStartsWith("填空题").exists() || textStartsWith("多选题").exists() || textStartsWith("单选题").exists())) {
+            console.error("没有找到题目！请检查是否进入答题界面！");
+            console.log("停止");
+            break;
+        }
         dailyQuestionLoop();
         if (text("再练一次").exists()) {
             console.log("每周答题结束！")
