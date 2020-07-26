@@ -156,6 +156,13 @@ function challengeQuestion() {
     let conNum = 0;//连续答对的次数
     let lNum = 1;//轮数
     while (true) {
+        delay(1)
+        if (!className("RadioButton").exists()) {
+            toastLog("没有找到题目！请检查是否进入答题界面！");
+            console.error("没有找到题目！请检查是否进入答题界面！");
+            console.log("停止");
+            break;
+        }
         challengeQuestionLoop(conNum);
         delay(randomNum(3, 6));
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +

@@ -286,18 +286,15 @@ function articleStudy() {
             }
             if (text("展开").exists())//如果存在“展开”则认为进入了文章栏中的视频界面需退出
             {
-                console.warn("进入了视频界面，退出并进下一篇文章!");
+                console.warn("进入了视频界面，退出并进入下一篇文章!");
                 t++;
                 back();
-                while (!desc("学习").exists());
-                desc("学习").click();
-                console.info("因为广播被打断，重新收听广播...");
-                delay(0.5);
-                click("电台");
-                delay(1);
-                click("最近收听");
-                delay(1);
-                back();
+                if (rTime != 0) {
+                    while (!desc("学习").exists());
+                    console.info("因为广播被打断，重新收听广播...");
+                    delay(0.5);
+                    listenToRadio();//听电台广播
+                }
                 while (!desc("学习").exists());
                 desc("学习").click();
                 delay(1);
@@ -368,13 +365,11 @@ function articleStudy() {
             {
                 date_string = getYestardayDateString();
                 console.warn("首页没有找到当天文章，即将学习昨日新闻!");
-                continue;
             }
             if (fail > 3)//连续翻几页没有点击成功则认为今天的新闻还没出来，学习昨天的
             {
                 date_string = getYestardayDateString();
                 console.warn("没有找到当天文章，即将学习昨日新闻!");
-                continue;
             }
             if (!textContains(date_string).exists())//当前页面当天新闻
             {
@@ -611,6 +606,14 @@ function getScores() {
     console.log(myScores);
 
     aCount = 6 - myScores["阅读文章"];
+    if (parseInt(6 - myScores["文章学习时长"]) != 0 && aCount == 0) {
+        console.info("文章学习时长不足，但剩余文章为0，强制增加剩余文章")
+        if (parseInt(6 - myScores["文章学习时长"]) >= 2) {
+            aCount = 2; // 解决文章学习时长不够，但剩余文章为0不会阅读的问题，这里强制增加
+        } else {
+            aCount = 1;
+        }
+    }
     aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;
@@ -827,6 +830,11 @@ function challengeQuestion() {
     let conNum = 0;//连续答对的次数
     let lNum = 1;//轮数
     while (true) {
+        delay(1)
+        while (!className("RadioButton").exists()) {
+            console.error("没有找到题目！请检查是否进入答题界面！");
+            delay(2);
+        }
         challengeQuestionLoop(conNum);
         delay(randomNum(3, 6));
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
@@ -1161,6 +1169,10 @@ function dailyQuestion() {
     let dlNum = 0;//每日答题轮数
     while (true) {
         delay(1)
+        while (!(textStartsWith("填空题").exists() || textStartsWith("多选题").exists() || textStartsWith("单选题").exists())) {
+            console.error("没有找到题目！请检查是否进入答题界面！");
+            delay(2);
+        }
         dailyQuestionLoop();
         if (text("再练一次").exists()) {
             console.log("每周答题结束！")
