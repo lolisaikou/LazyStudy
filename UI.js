@@ -18,7 +18,7 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <text textSize="16sp" textColor="red" text="v2.6.3" />
+                    <text textSize="16sp" textColor="red" text="v2.6.4" />
                     <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>

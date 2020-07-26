@@ -261,17 +261,14 @@ function articleStudy() {
                 n++;
             }
             if (text("展开").exists()) {//如果存在“展开”则认为进入了文章栏中的视频界面需退出
-                console.warn("进入了视频界面，即将退出并进下一篇文章!");
+                console.warn("进入了视频界面，退出并进入下一篇文章!");
                 t++;
-                delay(2);
-                if (myScores['视听学习时长'] != 6) {
-                    console.log("因为广播被打断，正在重新收听广播...");
-                    back();
-                    click("电台");
-                    delay(1);
-                    click("最近收听");
-                    delay(2);
-                    back();
+                back();
+                if (rTime != 0) {
+                    while (!desc("学习").exists());
+                    console.info("因为广播被打断，重新收听广播...");
+                    delay(0.5);
+                    listenToRadio();//听电台广播
                 }
                 while (!desc("学习").exists());
                 desc("学习").click();
@@ -334,15 +331,13 @@ function articleStudy() {
             i++;
             t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!
         } else {
-            // if (i == 0){//如果第一次点击就没点击成功则认为首页无当天文章
-            //     date_string = getYestardayDateString();
-            //     console.warn("首页没有找到当天文章，即将学习昨日新闻!");
-            //     continue;
-            // }
+            if (i == 0){//如果第一次点击就没点击成功则认为首页无当天文章
+                date_string = getYestardayDateString();
+                console.warn("首页没有找到当天文章，即将学习昨日新闻!");
+            }
             if (fail >= aCount) {//连续翻几页没有点击成功则认为今天的新闻还没出来，学习昨天的
                 date_string = getYestardayDateString();
                 console.warn("没有找到当天文章，即将学习昨日新闻!");
-                continue;
             }
             if (!textContains(date_string).exists()) {//当前页面当天新闻
                 fail++;//失败次数加一
@@ -503,6 +498,14 @@ function getScores() {
     console.log(myScores);
 
     aCount = 6 - myScores["阅读文章"];
+    if (parseInt(6 - myScores["文章学习时长"]) != 0 && aCount == 0) {
+        console.info("文章学习时长不足，但剩余文章为0，强制增加剩余文章")
+        if (parseInt(6 - myScores["文章学习时长"]) >= 2) {
+            aCount = 2; // 解决文章学习时长不够，但剩余文章为0不会阅读的问题，这里强制增加
+        } else {
+            aCount = 1;
+        }
+    }
     aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;

@@ -334,6 +334,7 @@ function dailyQuestion() {
     while (true) {
         delay(1)
         if (!(textStartsWith("填空题").exists() || textStartsWith("多选题").exists() || textStartsWith("单选题").exists())) {
+            toastLog("没有找到题目！请检查是否进入答题界面！");
             console.error("没有找到题目！请检查是否进入答题界面！");
             console.log("停止");
             break;

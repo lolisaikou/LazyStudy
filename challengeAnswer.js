@@ -158,6 +158,7 @@ function challengeQuestion() {
     while (true) {
         delay(1)
         if (!className("RadioButton").exists()) {
+            toastLog("没有找到题目！请检查是否进入答题界面！");
             console.error("没有找到题目！请检查是否进入答题界面！");
             console.log("停止");
             break;
