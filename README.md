@@ -14,7 +14,9 @@
 一款基于auto.js，安卓自动学习脚本，支持看文章视频、收藏分享评论、挑战答题、每日答题、每周答题。  
 本项目仅供autojs交流学习，请勿用于商业
 
-[release下载](https://github.com/lolisaikou/LazyStudy/releases/)
+[release下载](https://github.com/lolisaikou/LazyStudy/releases/)  
+[蓝奏云分流](https://lolisaikou.lanzous.com/b09l9qovg)  
+
 ## 关于本脚本
 因原作者将脚本被删除，这里只能依靠本人能力和[ivanwhaf](https://github.com/ivanwhaf/xxqg-helper)的脚本更新  
 
@@ -39,7 +41,7 @@
         修复了一些小问题  
 ***
 - 2020.07.20  
-        增加了选择文章学习类别的功能 #11  
+        增加了选择文章学习类别的功能 [#11](https://github.com/lolisaikou/LazyStudy/issues/11)  
         修复如果文章标题里有英文单引号会导致数据库写入错误的问题  
         更改了阅读文章部分的逻辑，把视频检测的部分放在了获取文章标题的前面  
         增加了文章标题获取的方法，感谢[#issuecomment-660916041](https://github.com/lolisaikou/LazyStudy/issues/11#issuecomment-660916041)  
@@ -52,7 +54,7 @@
 - 2020.07.07  
         将已学习的文章存储到**其他数据库**内而不是`题库`（备份题库的功能也换为备份已读文章的数据库）  
         修改每日浏览逻辑，解决运行结束，"视听学习"分数不够的问题  
-        ~~可能~~修复 #3 中提到的问题  
+        ~~可能~~修复 [#3](https://github.com/lolisaikou/LazyStudy/issues/3) 中提到的问题  
         修改限制每日挑战答题次数的逻辑  
         修复订阅强国号的各种问题  
 ***
