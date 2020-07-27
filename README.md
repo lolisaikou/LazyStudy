@@ -15,8 +15,6 @@
 本项目仅供autojs交流学习，请勿用于商业
 
 [release下载](https://github.com/lolisaikou/LazyStudy/releases/)  
-[蓝奏云分流](https://lolisaikou.lanzous.com/b09l9qovg)  
-
 ## 关于本脚本
 因原作者将脚本被删除，这里只能依靠本人能力和[ivanwhaf](https://github.com/ivanwhaf/xxqg-helper)的脚本更新  
 
