@@ -8,11 +8,11 @@ importClass(org.jsoup.select.Elements);
 
 importClass(android.database.sqlite.SQLiteDatabase);
 /**
- * 插入tikuNet表
+ * @description: 更新数据库tikuNet表
  * @param  {} liArray li列表，包含题目和答案
  */
 function CreateAndInsert(liArray){
-    
+
     var dbName = "tiku.db";
     //文件路径
     var path = files.path(dbName);
@@ -23,7 +23,7 @@ function CreateAndInsert(liArray){
     //创建或打开数据库
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
     var createTable = "\
-    CREATE TABLE IF NOt EXISTS tikuNet(\
+    CREATE TABLE IF NOT EXISTS tikuNet(\
     question CHAR(253),\
     answer CHAR(100)\
     );";
@@ -49,8 +49,8 @@ function CreateAndInsert(liArray){
     }
     db.setTransactionSuccessful();
     db.endTransaction();
-    db.close();  
-    return true;  
+    db.close();
+    return true;
 }
 
 

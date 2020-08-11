@@ -13,7 +13,7 @@ var cCount = 2;//收藏+分享+评论次数
 
 var aTime = 103;//每篇文章学习-103秒 103*7≈720秒=12分钟
 var vTime = 15;//每个小视频学习-15秒
-var rTime = 1080;//广播收听-18分钟
+var rTime = 1140;//广播收听-18分钟
 
 var commentText = ["支持党，支持国家！", "为实现中华民族伟大复兴而不懈奋斗！", "紧跟党走，毫不动摇！",
     "不忘初心，牢记使命", "努力奋斗，报效祖国！"];//评论内容，可自行修改，大于5个字便计分
@@ -267,115 +267,103 @@ function articleStudy() {
     var fail = 0;//点击失败次数
     var date_string = getTodayDateString();//获取当天日期字符串
     for (var i = 0, t = 0; i < aCount;) {
-        if (click(date_string, t) == true)//如果点击成功则进入文章页面,不成功意味着本页已经到底,要翻页
-        {
-            delay(3);
-            //获取当前正在阅读的文章标题
-            let n = 0;
-            while (!textContains("欢迎发表你的观点").exists())//如果没有找到评论框则认为没有进入文章界面，一直等待
-            {
-                delay(1);
-                console.warn("正在等待加载文章界面...");
-                if (n > 3)//等待超过3秒则认为进入了专题界面，退出进下一篇文章
+        try {
+            if ((id("general_card_title_id").findOnce(t).parent().parent().click() || id("general_card_title_id").findOnce(t).parent().parent().parent().click()) == true) {
+                delay(3);
+                //获取当前正在阅读的文章标题
+                let n = 0;
+                while (!textContains("欢迎发表你的观点").exists())//如果没有找到评论框则认为没有进入文章界面，一直等待
                 {
-                    console.warn("没找到评论框!该界面非文章界面!");
-                    zt_flag = true;
-                    break;
+                    delay(1);
+                    console.warn("正在等待加载文章界面...");
+                    if (n > 3)//等待超过3秒则认为进入了专题界面，退出进下一篇文章
+                    {
+                        console.warn("没找到评论框!该界面非文章界面!");
+                        zt_flag = true;
+                        break;
+                    }
+                    n++;
                 }
-                n++;
-            }
-            if (text("展开").exists())//如果存在“展开”则认为进入了文章栏中的视频界面需退出
-            {
-                console.warn("进入了视频界面，退出并进入下一篇文章!");
-                t++;
-                back();
-                if (rTime != 0) {
-                    while (!desc("学习").exists());
-                    console.info("因为广播被打断，重新收听广播...");
-                    delay(0.5);
-                    listenToRadio();//听电台广播
+                if (text("展开").exists())//如果存在“展开”则认为进入了文章栏中的视频界面需退出
+                {
+                    console.warn("进入了视频界面，退出并进入下一篇文章!");
+                    t++;
+                    back();
+                    if (rTime != 0) {
+                        while (!desc("学习").exists());
+                        console.info("因为广播被打断，重新收听广播...");
+                        delay(0.5);
+                        listenToRadio();//听电台广播
+                        while (!desc("学习").exists());
+                        desc("学习").click();
+                    }
+                    delay(1);
+                    continue;
                 }
-                while (!desc("学习").exists());
-                desc("学习").click();
+                if (zt_flag == true)//进入专题页标志
+                {
+                    console.warn("进入了专题界面，退出并进下一篇文章!")
+                    t++;
+                    back();
+                    delay(1);
+                    zt_flag = false;
+                    continue;
+                }
+                var currentNewsTitle = ""
+                if (id("xxqg-article-header").exists()) {
+                    currentNewsTitle = id("xxqg-article-header").findOne().child(0).text(); // 最终解决办法
+                } else if (textContains("来源").exists()) {
+                    currentNewsTitle = textContains("来源").findOne().parent().children()[0].text();
+                } else if (textContains("作者").exists()) {
+                    currentNewsTitle = textContains("作者").findOne().parent().children()[0].text();
+                } else if (descContains("来源").exists()) {
+                    currentNewsTitle = descContains("来源").findOne().parent().children()[0].desc();
+                } else if (descContains("作者").exists()) {
+                    currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
+                } else {
+                    console.log("无法定位文章标题,即将退出并阅读下一篇")
+                    t++;
+                    back();
+                    delay(2);
+                    continue;
+                }
+                if (currentNewsTitle == "") {
+                    console.log("标题为空,即将退出并阅读下一篇")
+                    t++;
+                    back();
+                    delay(2);
+                    continue;
+                }
+                var flag = getLearnedArticle(currentNewsTitle, date_string);
+                if (flag) {
+                    //已经存在，表明阅读过了
+                    console.info("该文章已经阅读过，即将退出并阅读下一篇");
+                    t++;
+                    back();
+                    delay(2);
+                    continue;
+                } else {
+                    //没阅读过，添加到数据库
+                    insertLearnedArticle(currentNewsTitle, date_string);
+                }
+                console.log("正在学习第" + (i + 1) + "篇文章...");
+                fail = 0;//失败次数清0
+                article_timing(i, aTime);
+                if (i < cCount)//收藏分享2篇文章
+                {
+                    CollectAndShare(i);//收藏+分享 若c运行到此报错请注释本行！
+                    Comment(i);//评论
+                }
+                back();//返回主界面
+                while (!desc("学习").exists());//等待加载出主页
                 delay(1);
-                continue;
-            }
-            if (zt_flag == true)//进入专题页标志
-            {
-                console.warn("进入了专题界面，退出并进下一篇文章!")
-                t++;
-                back();
-                delay(1);
-                zt_flag = false;
-                continue;
-            }
-            var currentNewsTitle = ""
-            if (id("xxqg-article-header").exists()) {
-                currentNewsTitle = id("xxqg-article-header").findOne().child(0).text(); // 最终解决办法
-            } else if (textContains("来源").exists()) {
-                currentNewsTitle = textContains("来源").findOne().parent().children()[0].text();
-            } else if (textContains("作者").exists()) {
-                currentNewsTitle = textContains("作者").findOne().parent().children()[0].text();
-            } else if (descContains("来源").exists()) {
-                currentNewsTitle = descContains("来源").findOne().parent().children()[0].desc();
-            } else if (descContains("作者").exists()) {
-                currentNewsTitle = descContains("作者").findOne().parent().children()[0].desc();
+                i++;
+                t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!}
             } else {
-                console.log("无法定位文章标题,即将退出并阅读下一篇")
                 t++;
-                back();
-                delay(2);
-                continue;
             }
-            if (currentNewsTitle == "") {
-                console.log("标题为空,即将退出并阅读下一篇")
-                t++;
-                back();
-                delay(2);
-                continue;
-            }
-            var flag = getLearnedArticle(currentNewsTitle, date_string);
-            if (flag) {
-                //已经存在，表明阅读过了
-                console.info("该文章已经阅读过，即将退出并阅读下一篇");
-                t++;
-                back();
-                delay(2);
-                continue;
-            } else {
-                //没阅读过，添加到数据库
-                insertLearnedArticle(currentNewsTitle, date_string);
-            }
-            console.log("正在学习第" + (i + 1) + "篇文章...");
-            fail = 0;//失败次数清0
-            article_timing(i, aTime);
-            if (i < cCount)//收藏分享2篇文章
-            {
-                CollectAndShare(i);//收藏+分享 若c运行到此报错请注释本行！
-                Comment(i);//评论
-            }
-            back();//返回主界面
-            while (!desc("学习").exists());//等待加载出主页
-            delay(1);
-            i++;
-            t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!
-        }
-        else {
-            if (i == 0)//如果第一次点击就没点击成功则认为首页无当天文章
-            {
-                date_string = getYestardayDateString();
-                console.warn("首页没有找到当天文章，即将学习昨日新闻!");
-            }
-            if (fail > 3)//连续翻几页没有点击成功则认为今天的新闻还没出来，学习昨天的
-            {
-                date_string = getYestardayDateString();
-                console.warn("没有找到当天文章，即将学习昨日新闻!");
-            }
-            if (!textContains(date_string).exists())//当前页面当天新闻
-            {
-                fail++;//失败次数加一
-            }
-            listView.scrollForward();//向下滑动(翻页)
+        } catch (e) {
+            listView.scrollForward();
             t = 0;
             delay(1.5);
         }
@@ -437,7 +425,7 @@ function videoStudy_news() {
             delay(1);
             i++;
             t++;
-            if (i == 3) {//如果是平板等设备，请尝试修改i为合适值！
+            if (i == 2) {//如果是平板等设备，请尝试修改i为合适值！
                 listView.scrollForward();//翻页
                 delay(2);
                 t = 2;

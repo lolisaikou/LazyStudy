@@ -18,7 +18,7 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <text textSize="16sp" textColor="red" text="一键44分 v2.6.4" />
+                    <text textSize="16sp" textColor="red" text="一键44分 v2.6.5" />
                     <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>
@@ -83,7 +83,7 @@ ui.viewpager.setTitles(["功能", "题库", "帮助与更新"]);
 ui.tabs.setupWithViewPager(ui.viewpager);
 
 //帮助页加载
-var src = "https://github.com/lolisaikou/LazyStudy/blob/master/README.md";
+var src = "https://github.com/lolisaikou/LazyStudy/blob/onekey/README.md";
 ui.webview.loadUrl(src);
 
 //进度条不可见
