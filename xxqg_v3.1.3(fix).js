@@ -349,10 +349,11 @@ function articleStudy() {
                 console.log("正在学习第" + (i + 1) + "篇文章...");
                 fail = 0;//失败次数清0
                 article_timing(i, aTime);
-                if (i < cCount)//收藏分享2篇文章
+                if (cCount != 0)//收藏分享2篇文章
                 {
                     CollectAndShare(i);//收藏+分享 若c运行到此报错请注释本行！
                     Comment(i);//评论
+                    cCount--;
                 }
                 back();//返回主界面
                 while (!desc("学习").exists());//等待加载出主页
@@ -450,19 +451,18 @@ function listenToRadio() {
     delay(1);
     click("听新闻广播");
     delay(2);
-    if (textContains("最近收听").exists()) {
-        click("最近收听");
-        console.log("正在收听广播...");
-        delay(1);
-        back();//返回电台界面
-        return;
+    while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
+        log("等待加载")
+        delay(1)
     }
-    if (textContains("推荐收听").exists()) {
-        click("推荐收听");
-        console.log("正在收听广播...");
-        delay(1);
-        back();//返回电台界面
+    if (click("最近收听") == 0) {
+        if (click("推荐收听") == 0) {
+            click("正在收听")
+        }
     }
+    console.log("正在收听广播...");
+    delay(1);
+    back();//返回电台界面
 }
 
 /**
@@ -606,7 +606,9 @@ function getScores() {
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 180;
     asub = 2 - myScores["订阅"];
+    cCount = 2 - myScores["发表观点"]
 
+    console.log('收藏评论分享：' + cCount.toString() + '个')
     console.log('订阅：' + asub.toString() + '个')
     console.log('剩余文章：' + aCount.toString() + '篇')
     console.log('剩余每篇文章学习时长：' + aTime.toString() + '秒')
@@ -1191,6 +1193,28 @@ function dailyQuestion() {
     }
 }
 
+/**
+@description: 停止广播
+@param: null
+@return: null
+*/
+function stopRadio() {
+    click("电台");
+    delay(1);
+    click("听新闻广播");
+    delay(2);
+    while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
+        log("等待加载")
+        delay(2)
+    }
+    if (click("正在收听") == 0) {
+        click("最近收听")
+    }
+    delay(3);
+    id("v_play").findOnce(0).click()
+    back()
+}
+
 
 /**
 @description: 学习平台订阅
@@ -1204,6 +1228,9 @@ function sub() {
     delay(2);
     click("添加");
     delay(2);
+    click("学习平台", 0); // text("学习平台").findOne().click() == click("学习平台", 0) 解决订阅问题
+    delay(0.5)
+    click("强国号", 0)
     let sublist = className("ListView").findOnce(0);
     var i = 0;
     var t = 0;
@@ -1277,17 +1304,11 @@ function main() {
     if (myScores['订阅'] != 2) {
         sub();//订阅
     }
-    if (myScores['本地频道'] != 1) {
-        localChannel();//本地频道
-    }
     if (myScores['挑战答题'] != 6) {
         challengeQuestion();//挑战答题
     }
     if (myScores['每日答题'] != 6) {
         dailyQuestion();//每日答题
-    }
-    if (vCount != 0) {
-        videoStudy_news();//看视频
     }
     if (rTime != 0) {
         listenToRadio();//听电台广播
@@ -1300,7 +1321,15 @@ function main() {
     var end = new Date().getTime();//广播结束时间
     var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
     radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
-
+    if (myScores['本地频道'] != 1) {
+        localChannel();//本地频道
+    }
+    if (vCount != 0) {
+        videoStudy_news();//看视频
+    }
+    if (rTime != 0) {
+        stopRadio();
+    }
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
     files.copy(path, "/sdcard/Download/list.db");
