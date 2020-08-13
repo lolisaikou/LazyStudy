@@ -201,12 +201,12 @@ function clickByAnswer(answer) {
  * @return: null
  */
 function checkAndUpdate(question, ansTiku, answer) {
-    if (className("Button").desc("下一题").exists() || className("Button").desc("完成").exists()) {//答错了
+    if (text("答案解析").exists()) {//答错了
         swipe(100, device.height - 100, 100, 100, 500);
         var nCout = 0
         while (nCout < 5) {
-            if (descStartsWith("正确答案").exists()) {
-                var correctAns = descStartsWith("正确答案").findOnce().desc().substr(5);
+            if (textStartsWith("正确答案").exists()) {
+                var correctAns = textStartsWith("正确答案").findOnce().text().substr(6);
                 console.info("正确答案是：" + correctAns);
                 if (ansTiku == "") { //题库为空则插入正确答案                
                     var sql = "INSERT INTO tiku VALUES ('" + question + "','" + correctAns + "','')";
