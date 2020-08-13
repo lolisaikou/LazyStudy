@@ -217,8 +217,8 @@ function challengeQuestion() {
         {
             conNum++;
         }
-        conNum = 0;
     }
+    conNum = 0;
 }
 
 function main() {
