@@ -14,16 +14,16 @@ function main()
 {
     var textOrder=text("欢迎发表你的观点").findOnce().drawingOrder();
     //toastLog("textOrder = "+textOrder);
-    var shouOrder=textOrder+2;
+    // var shouOrder=textOrder+2;
     var zhuanOrder=textOrder+3;
     /*className("ImageView").find().forEach(item=>{
         log(item.drawingOrder());
         if(item.drawingOrder()==shouOrder) var collectIcon=item;   
         if(item.drawingOrder()==zhuanOrder) var shareIcon=item;     
     });*/
-    var collectIcon=className("ImageView").filter(function(iv){
-        return iv.drawingOrder()==shouOrder;
-        }).findOnce();
+    // var collectIcon=className("ImageView").filter(function(iv){
+    //     return iv.drawingOrder()==shouOrder;
+    //     }).findOnce();
         
     var shareIcon=className("ImageView").filter(function(iv){
         return iv.drawingOrder()==zhuanOrder;
@@ -32,8 +32,8 @@ function main()
     //toastLog("正在进行收藏分享评论...");
     //收藏
     //var collectIcon = className("com.uc.webview.export.WebView").findOnce().parent().child(7);//右下角收藏按钮
-    collectIcon.click();//点击收藏
-    delay(2);
+    // collectIcon.click();//点击收藏
+    // delay(2);
         //var shareIcon = className("com.uc.webview.export.WebView").findOnce().parent().child(8);//右下角分享按钮
     shareIcon.click();//点击分享
     while(!textContains("分享到学习强").exists());//等待弹出分享选项界面
@@ -59,8 +59,8 @@ function main()
     click("确认");//确认删除
     //toastLog("评论删除成功!");
     delay(2);
-    collectIcon.click();//取消收藏
-    delay(1);
+    // collectIcon.click();//取消收藏
+    // delay(1);
     toastLog("运行结束");
     
     //toastLog("收藏成功!");

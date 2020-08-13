@@ -1,7 +1,6 @@
 importClass(android.database.sqlite.SQLiteDatabase);
 var lCount = 1;//挑战答题轮数
-var qCount = 10;//挑战答题每轮答题数
-var allCount = 0;
+var qCount = 5;//挑战答题每轮答题数
 
 /**
  * @description: 延时函数
@@ -46,7 +45,7 @@ function getAnswer(question, table_name) {
         return answer;
     }
     else {
-        toastLog("题库中未找到答案");
+        console.log("题库中未找到答案");
         cursor.close();
         return '';
     }
@@ -63,7 +62,7 @@ function indexFromChar(str) {
  * @return: null
  */
 function challengeQuestionLoop(conNum) {
-    if (conNum >= qCount || allCount >= 10)//答题次数足够退出，每轮5次
+    if (conNum >= qCount)//答题次数足够退出，每轮5次
     {
         let listArray = className("ListView").findOnce().children();//题目选项列表
         let i = random(0, listArray.length - 1);
@@ -122,28 +121,51 @@ function challengeQuestionLoop(conNum) {
     {
         let i = random(0, listArray.length - 1);
         console.error("没有找到答案，随机点击一个");
+        delay(randomNum(0.5, 1));
         listArray[i].child(0).click();//随意点击一个答案
         hasClicked = true;
         console.log("------------");
     }
     else//如果找到了答案
     {
+        var clickAns = "";
         listArray.forEach(item => {
             var listDescStr = item.child(0).child(1).text();
             if (listDescStr == answer) {
-                item.child(0).click();//点击答案
+                clickAns = answer;
+                //显示 对号
+                var b = item.child(0).bounds();
+                var tipsWindow = drawfloaty(b.left, b.top);
+                //随机时长点击
+                delay(randomNum(0.5, 1.5));
+                //点击
+                item.child(0).click();
                 hasClicked = true;
-                console.log("------------");
+                sleep(300);
+                //消失 对号
+                tipsWindow.close();
             }
         });
     }
     if (!hasClicked)//如果没有点击成功
     {
         console.error("未能成功点击，随机点击一个");
+        delay(randomNum(0.5, 1));
         let i = random(0, listArray.length - 1);
         listArray[i].child(0).click();//随意点击一个答案
         console.log("------------");
     }
+}
+
+function drawfloaty(x, y) {
+    //floaty.closeAll();
+    var window = floaty.window(
+        <frame gravity="center">
+            <text id="text" text="✔" textColor="red" />
+        </frame>
+    );
+    window.setPosition(x, y - 45);
+    return window;
 }
 
 
@@ -154,9 +176,9 @@ function challengeQuestionLoop(conNum) {
  */
 function challengeQuestion() {
     let conNum = 0;//连续答对的次数
-    let lNum = 1;//轮数
+    let lNum = 0;//轮数
     while (true) {
-        delay(1)
+        delay(2);
         if (!className("RadioButton").exists()) {
             toastLog("没有找到题目！请检查是否进入答题界面！");
             console.error("没有找到题目！请检查是否进入答题界面！");
@@ -164,11 +186,14 @@ function challengeQuestion() {
             break;
         }
         challengeQuestionLoop(conNum);
-        delay(randomNum(3, 6));
+        delay(1);
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
             "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists())//遇到❌号，则答错了,不再通过结束本局字样判断
         {
-            if (lNum >= lCount && allCount >= 10) {
+            if (conNum >= qCount) {
+                lNum++;
+            }
+            if (lNum >= lCount) {
                 console.log("挑战答题结束！返回积分界面！");
                 back();
                 delay(1);
@@ -183,24 +208,16 @@ function challengeQuestion() {
                 delay(2);
                 text("再来一局").click()
                 delay(4);
-                if (allCount >= qCount) {
-                    lNum++;
-                }
-                if (conNum < 5 && allCount < 5) {
-                    allCount = 0;
+                if (conNum < 5) {
                     conNum = 0;
-                }
-                else {
-                    allCount = 5;
-                    conNum = 5;
                 }
             }
         }
         else//答对了
         {
             conNum++;
-            allCount++;
         }
+        conNum = 0;
     }
 }
 
@@ -210,7 +227,6 @@ function main() {
     delay(1);
     challengeQuestion();
     console.hide()
-    allCount = 0;
 }
 
 module.exports = main;

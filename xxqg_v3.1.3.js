@@ -69,9 +69,9 @@ var aCount = 6;//文章默认学习篇数
 var vCount = 6;//小视频默认学习个数
 var cCount = 2;//收藏+分享+评论次数
 
-var aTime = 103;//每篇文章学习-103秒 103*7≈720秒=12分钟
+var aTime = 65;//有效阅读一分钟1分*6
 var vTime = 15;//每个小视频学习-15秒
-var rTime = 1140;//广播收听-18分钟
+var rTime = 370;//广播收听6分 * 60 = 360秒
 
 var aCatlog = files.read("./article.txt");//文章学习类别，可自定义修改为“要闻”、“新思想”等
 
@@ -489,20 +489,15 @@ function getScores() {
     }
     console.log(myScores);
 
-    aCount = 6 - myScores["阅读文章"];
-    if (parseInt(6 - myScores["文章学习时长"]) != 0 && aCount == 0) {
-        console.info("文章学习时长不足，但剩余文章为0，强制增加剩余文章")
-        if (parseInt(6 - myScores["文章学习时长"]) >= 2) {
-            aCount = 2; // 解决文章学习时长不够，但剩余文章为0不会阅读的问题，这里强制增加
-        } else {
-            aCount = 1;
-        }
-    }
-    aTime = parseInt((6 - myScores["文章学习时长"]) * 120 / aCount) + 10;
+    aCount = Math.ceil((12 - myScores["我要选读文章"]) / 2); //文章个数
     vCount = 6 - myScores["视听学习"];
-    rTime = (6 - myScores["视听学习时长"]) * 180;
+    rTime = (6 - myScores["视听学习时长"]) * 60;
     asub = 2 - myScores["订阅"];
+    sCount = 2 - myScores["分享"]
+    cCount = 1 - myScores["发表观点"]
 
+    console.log('评论：' + cCount.toString() + '个')
+    console.log('分享：' + sCount.toString() + '个')
     console.log('订阅：' + asub.toString() + '个')
     console.log('剩余文章：' + aCount.toString() + '篇')
     console.log('剩余每篇文章学习时长：' + aTime.toString() + '秒')
