@@ -64,8 +64,12 @@ function updateTikunet() {
     log('题库下载完毕，', util.format("题目总数：%s"), liArray.size());
     //执行更新
     log("开始更新数据库...");
-    CreateAndInsert(liArray)
-    log("数据库更新完毕！");
+    if (CreateAndInsert(liArray)) {
+        log("数据库更新完毕！");
+        return liArray.size();
+    } else {
+        return -1;
+    }
 }
 //updateTikunet();
 module.exports = updateTikunet;

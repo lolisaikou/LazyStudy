@@ -18,7 +18,8 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <text textSize="16sp" textColor="red" text="v2.6.6" />
+                    <img src={"https://api.ixiaowai.cn/gqapi/gqapi.php?" + new Date().getTime()} scaleType="centerCrop" alpha="0.3" />
+                    <text textSize="16sp" textColor="red" text="v2.6.7" />
                     <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>
@@ -305,7 +306,8 @@ ui.updateTikuNet.click(() => {
             var ss = "./updateTikuNet.js";
             let begin = require(ss);
             var resultNum = begin();
-            var resultStr = "更新" + resultNum + "道题！";
+            var resultStr = "更新了" + resultNum + "道题！";
+            log("更新了" + resultNum + "道题！")
             ui.run(() => {
                 ui.resultLabel.setText("");
                 ui.pbar.setVisibility(View.INVISIBLE);
