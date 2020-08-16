@@ -21,7 +21,7 @@ var vCount = 6;//小视频默认学习个数
 var cCount = 1;//评论次数
 var sCount = 2;//分享次数
 
-var aTime = 65;//有效阅读一分钟1分*6
+var aTime = 70;//有效阅读一分钟1分*6
 var vTime = 15;//每个小视频学习-15秒
 var rTime = 370;//广播收听6分 * 60 = 360秒
 
@@ -61,7 +61,7 @@ function randomNum(minNum, maxNum) {
  * @return: null
  */
 function delay(seconds) {
-    sleep(1000 * seconds);//sleep函数参数单位为毫秒所以乘1000
+    sleep(1000 * seconds + randomNum(0, 500));//sleep函数参数单位为毫秒所以乘1000
 }
 
 /**
@@ -125,6 +125,7 @@ function insertLearnedArticle(title, date) {
  * @return: null
  */
 function article_timing(n, seconds) {
+    seconds = seconds + randomNum(0, 10)
     h = device.height;//屏幕高
     w = device.width;//屏幕宽
     x = (w / 3) * 2;
@@ -140,7 +141,7 @@ function article_timing(n, seconds) {
         {
             console.info("第" + (n + 1) + "篇文章已经学习" + (i + 1) + "秒,剩余" + (seconds - i - 1) + "秒!");
         }
-        delay(1);
+        sleep(1000);
         if (i % 10 == 0)//每10秒滑动一次，如果android版本<7.0请将此滑动代码删除
         {
             toast("这是防息屏toast,请忽视-。-");
@@ -166,7 +167,7 @@ function video_timing_bailing(n, seconds) {
             console.error("当前已离开第" + (n + 1) + "个百灵小视频界面，请重新返回视频");
             delay(2);
         }
-        delay(1);
+        sleep(1000);
         console.info("第" + (n + 1) + "个小视频已经观看" + (i + 1) + "秒,剩余" + (seconds - i - 1) + "秒!");
     }
 }
@@ -177,8 +178,9 @@ function video_timing_bailing(n, seconds) {
  * @return: null
  */
 function video_timing_news(n, seconds) {
+    seconds = seconds + randomNum(0, 10)
     for (var i = 0; i < seconds; i++) {
-        delay(1);
+        sleep(1000);
         while (!textContains("欢迎发表你的观点").exists())//如果离开了联播小视频界面则一直等待
         {
             console.error("当前已离开第" + (n + 1) + "个新闻小视频界面，请重新返回视频");
@@ -195,7 +197,7 @@ function video_timing_news(n, seconds) {
  */
 function radio_timing(r_time, seconds) {
     for (var i = 0; i < seconds; i++) {
-        delay(1);
+        sleep(1000);
         if (i % 5 == 0)//每5秒打印一次信息
         {
             console.info("广播已经收听" + (i + 1 + r_time) + "秒,剩余" + (seconds - i - 1) + "秒!");
@@ -465,17 +467,20 @@ function listenToRadio() {
     click("听新闻广播");
     delay(2);
     while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
-        log("等待加载")
-        delay(1)
+        log("等待加载");
+        delay(1);
     }
     if (click("最近收听") == 0) {
         if (click("推荐收听") == 0) {
-            click("正在收听")
+            click("正在收听");
         }
     }
-    console.log("正在收听广播...");
-    delay(1);
-    back();//返回电台界面
+    delay(2);
+    if (id("btn_back").findOne().click() == 0) {
+        delay(2);
+        back();//返回电台界面
+    }
+    delay(2);
 }
 
 /**
@@ -557,8 +562,8 @@ function Comment(i) {
  */
 function localChannel() {
     delay(1)
-    desc("学习").click();
     while (!desc("学习").exists());//等待加载出主页
+    desc("学习").click();
     console.log("点击本地频道");
     if (text("新思想").exists()) {
         text("新思想").findOne().parent().parent().child(3).click();
@@ -607,10 +612,13 @@ function getScores() {
     console.log(myScores);
 
     aCount = Math.ceil((12 - myScores["我要选读文章"]) / 2); //文章个数
+    if (aCount != 0) {
+        aCount = aCount + randomNum(0, 1)
+    }
     vCount = 6 - myScores["视听学习"];
     rTime = (6 - myScores["视听学习时长"]) * 60;
     asub = 2 - myScores["订阅"];
-    sCount = 2 - myScores["分享"]
+    sCount = 2 - myScores["分享"] * 2
     cCount = 1 - myScores["发表观点"]
 
     console.log('评论：' + cCount.toString() + '个')
@@ -1200,20 +1208,25 @@ function dailyQuestion() {
 @return: null
 */
 function stopRadio() {
+    console.log("停止收听广播！");
     click("电台");
     delay(1);
     click("听新闻广播");
     delay(2);
     while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
-        log("等待加载")
+        log("等待加载");
         delay(2)
     }
     if (click("正在收听") == 0) {
-        click("最近收听")
+        click("最近收听");
     }
     delay(3);
-    id("v_play").findOnce(0).click()
-    back()
+    id("v_play").findOnce(0).click();
+    delay(2)
+    if (id("btn_back").findOne().click() == 0) {
+        delay(2);
+        back();
+    }
 }
 
 
@@ -1234,7 +1247,6 @@ function sub() {
     click("强国号", 0)
     let sublist = className("ListView").findOnce(0);
     var i = 0;
-    var t = 0;
     while (i < asub) {
         let object = desc("订阅").find();
         if (!object.empty()) {
@@ -1276,8 +1288,9 @@ function sub() {
                     })
                 } else if (text("你已经看到我的底线了").exists()) {
                     console.log("没有可订阅的强国号了,退出!!!")
-                    t++;// 如果全部都被订阅t++,让父循环结束
-                    break;
+                    back();
+                    delay(2);
+                    return;
                 } else {
                     delay(1);
                     sublist.scrollForward();
@@ -1286,9 +1299,6 @@ function sub() {
         } else {
             delay(1);
             sublist.scrollForward();
-        }
-        if (t >= 1) {
-            break;
         }
     }
     back();
@@ -1302,6 +1312,10 @@ function main() {
     var start = new Date().getTime();//程序开始时间
 
     getScores();//获取积分
+    if (rTime != 0) {
+        listenToRadio();//听电台广播
+    }
+    var r_start = new Date().getTime();//广播开始时间
     if (myScores['订阅'] != 2) {
         sub();//订阅
     }
@@ -1311,25 +1325,18 @@ function main() {
     if (myScores['每日答题'] != 6) {
         dailyQuestion();//每日答题
     }
-    if (rTime != 0) {
-        listenToRadio();//听电台广播
-    }
-    var r_start = new Date().getTime();//广播开始时间
     articleStudy();//学习文章，包含点赞、分享和评论
-    if (rTime != 0) {
-        listenToRadio();//继续听电台
-    }
     var end = new Date().getTime();//广播结束时间
     var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
     radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间
+    if (rTime != 0) {
+        stopRadio();
+    }
     if (myScores['本地频道'] != 1) {
         localChannel();//本地频道
     }
     if (vCount != 0) {
         videoStudy_news();//看视频
-    }
-    if (rTime != 0) {
-        stopRadio();
     }
     end = new Date().getTime();
     console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
