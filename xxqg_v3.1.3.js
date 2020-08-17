@@ -87,6 +87,22 @@ function delay(seconds) {
     sleep(1000 * seconds + randomNum(0, 500));//sleep函数参数单位为毫秒所以乘1000
 }
 
+/**
+ * @description: 生成从minNum到maxNum的随机数
+ * @param: minNum-较小的数
+ * @param: maxNum-较大的数
+ * @return: null
+ */
+function randomNum(minNum, maxNum) {
+    switch (arguments.length) {
+        case 1:
+            return parseInt(Math.random() * minNum + 1, 10);
+        case 2:
+            return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+        default:
+            return 0;
+    }
+} 
 
 /**
  * @description: 文章学习计时(弹窗)函数
