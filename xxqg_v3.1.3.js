@@ -252,12 +252,14 @@ function getYestardayDateString() {
  * @param: null
  * @return: null
  */
-function articleStudy() {
+function articleStudy(x) {
     while (!desc("学习").exists());//等待加载出主页
-    desc("学习").click();//点击主页正下方的"学习"按钮
-    delay(2);
     var listView = className("ListView");//获取文章ListView控件用于翻页
-    click(aCatlog);
+    if (x == 0) {
+        desc("学习").click();//点击主页正下方的"学习"按钮
+        delay(2);
+        click(aCatlog);
+    }
     delay(2);
     var zt_flag = false;//判断进入专题界面标志
     var fail = 0;//点击失败次数
@@ -482,7 +484,7 @@ function localChannel() {
  * @param: null
  * @return: null
  */
-function getScores() {
+function getScores(i) {
     while (!desc("学习").exists());//等待加载出主页
     console.log("正在获取积分...");
     while (!text("积分明细").exists()) {
@@ -511,6 +513,19 @@ function getScores() {
     console.log(myScores);
 
     aCount = Math.ceil((12 - myScores["我要选读文章"]) / 2); //文章个数
+    if (i == 1) {
+        console.info("检查阅读文章是否满分！")
+        aCount = 12 - myScores["我要选读文章"];
+        if (aCount != 0) {
+            console.log("还需要阅读：" + aCount.toString() + "篇！");
+        } else {
+            console.info("已满分！");
+        }
+        delay(1);
+        back();
+        delay(1);
+        return;
+    }
     if (aCount != 0) {
         aCount = aCount + randomNum(0, 1)
     }
@@ -639,7 +654,7 @@ function main() {
     start_app();//启动app
     var path = files.path("list.db");
     var start = new Date().getTime();//程序开始时间
-    getScores();//获取积分
+    getScores(0);//获取积分
     if (rTime != 0) {
         listenToRadio();//听电台广播
     }
@@ -647,13 +662,18 @@ function main() {
     if (myScores['订阅'] != 2) {
         sub();//订阅
     }
-    if (myScores['挑战答题'] != 6) {
-        challengeQuestion();//挑战答题
+    while (aCount != 0) {
+        var x = 0;
+        articleStudy(x);//学习文章，包含点赞、分享和评论
+        console.info("等待十秒，然后确认文章是否已满分。");
+        delay(10);
+        getScores(1);
+        x++;
+        if (x > 2) {//尝试三次
+            console.info("尝试3次未满分，暂时跳过。");
+            break;
+        }
     }
-    if (myScores['每日答题'] != 6) {
-        dailyQuestion();//每日答题
-    }
-    articleStudy();//学习文章，包含点赞、分享和评论
     var end = new Date().getTime();//广播结束时间
     var radio_time = (parseInt((end - r_start) / 1000));//广播已经收听的时间
     radio_timing(parseInt((end - r_start) / 1000), rTime - radio_time);//广播剩余需收听时间

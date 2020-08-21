@@ -18,8 +18,8 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <img src={"https://api.ixiaowai.cn/gqapi/gqapi.php?" + new Date().getTime()} scaleType="centerCrop" alpha="0.3" />
-                    <text textSize="16sp" textColor="red" text="v2.6.7" />
+                    <img src={"https://api.ixiaowai.cn/gqapi/gqapi.php?" + new Date().getTime()} scaleType="centerCrop" alpha="0.2" />
+                    <text textSize="16sp" textColor="red" text="v2.6.8" />
                     <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
                 </frame>
@@ -65,6 +65,7 @@ ui.layout(
                         <horizontal gravity="center">
                             <button id="daochu" text="导出文章列表" />
                             <button id="daoru" text="导入文章列表" />
+                            <button id="listdel" text="清空文章列表" />
                         </horizontal>
                     </vertical>
                 </frame>
@@ -319,6 +320,14 @@ ui.updateTikuNet.click(() => {
 });
 
 var path = files.path("list.db")
+ui.listdel.click(() => {
+    var db = SQLiteDatabase.openOrCreateDatabase(path, null);
+    var Deletelistable = "DELETE FROM learnedArticles";
+    db.execSQL(Deletelistable);
+    db.close();
+    toastLog("已清空文章阅读记录!");
+})
+
 ui.daochu.click(() => {
     dialogs.build({
         title: "提示",
