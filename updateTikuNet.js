@@ -1,11 +1,3 @@
-// 加载jsoup.jar
-runtime.loadJar("./jsoup-1.12.1.jar");
-// 使用jsoup解析html
-importClass(org.jsoup.Jsoup);
-importClass(org.jsoup.nodes.Document);
-//importClass(org.jsoup.nodes.Element);
-importClass(org.jsoup.select.Elements);
-
 importClass(android.database.sqlite.SQLiteDatabase);
 /**
  * @description: 更新数据库tikuNet表
@@ -35,12 +27,10 @@ function CreateAndInsert(liArray){
     var sql = "INSERT INTO tikuNet (question, answer) VALUES (?, ?)";
     db.beginTransaction();
     var stmt = db.compileStatement(sql);
-    for (var li = 0, len = liArray.size(); li < len; li++) {
+    for (var li = 0, len = liArray.length; li < len; li++) {
         //log("题目："+li.text());
-        var liText = liArray.get(li).text();
-        var timuPos=liText.indexOf("】")+1;
-        var tiMu=liText.substring(timuPos).replace(/_/g, "");
-        var daAn = liArray.get(li).select("b").first().text();
+        var tiMu = liArray[li].content;
+        var daAn = liArray[li].answer;
         log(util.format("题目:%s\n答案:%s"),tiMu,daAn);
         stmt.bindString(1, tiMu);
         stmt.bindString(2, daAn);
@@ -58,15 +48,14 @@ function CreateAndInsert(liArray){
  */
 function updateTikunet() {
     log("开始下载题库json数据...");
-    var htmlString = Jsoup.connect("http://49.235.90.76:5000").maxBodySize(0).timeout(10000).get();
-    var htmlArray = Jsoup.parse(htmlString);
-    var liArray = htmlArray.select("li:has(b)");
-    log('题库下载完毕，', util.format("题目总数：%s"), liArray.size());
+    var htmlArray = http.get("https://cdn.jsdelivr.net/gh/lolisaikou/tiku-autoupdate/questions.json");
+    var liArray = htmlArray.body.json();
+    log(util.format("题库下载完毕，题目总数:%s"), liArray.length);
     //执行更新
     log("开始更新数据库...");
     if (CreateAndInsert(liArray)) {
         log("数据库更新完毕！");
-        return liArray.size();
+        return liArray.length;
     } else {
         return -1;
     }
