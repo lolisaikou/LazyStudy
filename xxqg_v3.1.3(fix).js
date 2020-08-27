@@ -425,17 +425,16 @@ function videoStudy_bailing(vCount, vTime) {
  * @return: null
  */
 function videoStudy_news() {
+    delay(1)
+    desc("学习").click();
+    delay(2)
     click("电视台");
     delay(1)
     click("联播频道");
     delay(2);
     var listView = className("ListView");//获取listView视频列表控件用于翻页
-    let s = "中央广播电视总台";
-    if (!textContains("中央广播电视总台")) {
-        s = "央视网";
-    }
-    for (var i = 0, t = 1; i < vCount;) {
-        if (click(s, t) == true) {
+    for (var i = 0, t = 0; i < vCount;) {
+        if ((click("中央广播电视总台", t) || click("央视网", t)) == true) {
             console.log("即将学习第" + (i + 1) + "个视频!");
             video_timing_news(i, vTime);//学习每个新闻联播小片段
             back();//返回联播频道界面
@@ -443,16 +442,16 @@ function videoStudy_news() {
             delay(1);
             i++;
             t++;
-            if (i == 2) {//如果是平板等设备，请尝试修改i为合适值！
+            if (t >= 2) {//如果是平板等设备，请尝试修改i为合适值！
                 listView.scrollForward();//翻页
                 delay(2);
-                t = 2;
+                t = 0;
             }
         }
         else {
             listView.scrollForward();//翻页
             delay(2);
-            t = 3;
+            t = 0;
         }
     }
 }
