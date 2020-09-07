@@ -12,23 +12,6 @@ function delay(seconds) {
 }
 
 /**
- * @description: 生成从minNum到maxNum的随机数
- * @param: minNum-较小的数
- * @param: maxNum-较大的数
- * @return: null
- */
-function randomNum(minNum, maxNum) {
-    switch (arguments.length) {
-        case 1:
-            return parseInt(Math.random() * minNum + 1, 10);
-        case 2:
-            return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
-        default:
-            return 0;
-    }
-} 
-
-/**
  * @description: 从数据库中搜索答案
  * @param: question 问题
  * @return: answer 答案
@@ -37,7 +20,7 @@ function getAnswer(question, table_name) {
     var dbName = "tiku.db";//题库文件名
     var path = files.path(dbName);
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '" + question + "%'"
+    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
@@ -45,7 +28,7 @@ function getAnswer(question, table_name) {
         return answer;
     }
     else {
-        console.log("题库中未找到答案");
+        console.log(table_name + "题库中未找到答案");
         cursor.close();
         return '';
     }
@@ -102,7 +85,7 @@ function challengeQuestionLoop(conNum) {
         return;
     }
     var optionStr = options.join("_");
-    question += optionStr;
+    question = question + "%" + optionStr;
     var answer = getAnswer(question, 'tiku');
     if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
         answer = getAnswer(question, 'tikuNet');
@@ -122,51 +105,31 @@ function challengeQuestionLoop(conNum) {
     {
         let i = random(0, listArray.length - 1);
         console.error("没有找到答案，随机点击一个");
-        delay(randomNum(0.5, 1));
+        delay(1);
         listArray[i].child(0).click();//随意点击一个答案
         hasClicked = true;
         console.log("------------");
     }
     else//如果找到了答案
     {
-        var clickAns = "";
         listArray.forEach(item => {
             var listDescStr = item.child(0).child(1).text();
             if (listDescStr == answer) {
-                clickAns = answer;
-                //显示 对号
-                var b = item.child(0).bounds();
-                var tipsWindow = drawfloaty(b.left, b.top);
-                //随机时长点击
-                delay(randomNum(0.5, 1.5));
                 //点击
                 item.child(0).click();
                 hasClicked = true;
-                sleep(300);
-                //消失 对号
-                tipsWindow.close();
+                log("-----------------------------------");
             }
         });
     }
     if (!hasClicked)//如果没有点击成功
     {
         console.error("未能成功点击，随机点击一个");
-        delay(randomNum(0.5, 1));
+        delay(1);
         let i = random(0, listArray.length - 1);
         listArray[i].child(0).click();//随意点击一个答案
         console.log("------------");
     }
-}
-
-function drawfloaty(x, y) {
-    //floaty.closeAll();
-    var window = floaty.window(
-        <frame gravity="center">
-            <text id="text" text="✔" textColor="red" />
-        </frame>
-    );
-    window.setPosition(x, y - 45);
-    return window;
 }
 
 
@@ -229,7 +192,7 @@ function main() {
     challengeQuestion();
     console.hide()
 }
-
+//main();
 module.exports = main;
 
 
