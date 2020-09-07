@@ -89,7 +89,7 @@ function challengeQuestionLoop(conNum) {
         question = question.substring(0, chutiIndex - 2);
     }
 
-    question = question.replace(/\s/g, "");
+    question = question.replace(/\s/g, "%");
 
     var options = [];//选项列表
     if (className("ListView").exists()) {
@@ -101,7 +101,8 @@ function challengeQuestionLoop(conNum) {
         console.error("答案获取失败!");
         return;
     }
-
+    var optionStr = options.join("_");
+    question += optionStr;
     var answer = getAnswer(question, 'tiku');
     if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
         answer = getAnswer(question, 'tikuNet');
