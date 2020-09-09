@@ -323,44 +323,61 @@ function videoStudy_news() {
     delay(1)
     click("联播频道");
     delay(2);
+    var currentNewsTitle = "";
     var listView = className("ListView"); //获取listView视频列表控件用于翻页
     let s = "中央广播电视总台";
     if (!textContains("中央广播电视总台")) {
         s = "央视网";
     }
     for (var i = 0, t = 1; i < vCount;) {
-        if (click(s, t) == true) {
-            delay(1);
-            if (checkCol() != null) {
-                console.info("当前视频已收藏阅读过");
-                back();
-                continue;
-            }
-            console.log("即将学习第" + (i + 1) + "个视频!");
-            delay(1);
-            video_timing_news(i, vTime); //学习每个新闻联播小片段
-            rTime = rTime - vTime;
-            Collect(); //* 以收藏来标记文章已读，避免重复阅读
+        while (!desc("学习").exists());
+        delay(0.5);
+        var news_obj = text(s).findOnce(t);
+        //console.info(art_obj);
+        if (news_obj != null) {
+            t++; //t为实际查找的文章控件在当前布局中的标号,和i不同,勿改动!
+            if ((news_obj.parent().child(0).text() != currentNewsTitle) && (news_obj.parent().child(0).text() != s)) { //如果播报存在就进入文章正文
 
-            back(); //返回联播频道界面
-            while (!desc("学习").exists()); //等待加载出主页
-            delay(1);
-            i++;
-            t++;
-            if (i == 3) { //如果是平板等设备，请尝试修改i为合适值！
-                listView.scrollForward(); //翻页
-                log("……翻页……");
-                delay(2);
-                t = 2;
+                currentNewsTitle = news_obj.parent().child(0).text();
+                log(currentNewsTitle);
+                news_obj.parent().click();
+                delay(1);
+
+                if (text("继续播放").exists()) {
+                    click("继续播放");
+                }
+
+                if (!checkAndCollect()) {
+                    back();
+                    continue;
+                }
+
+                console.log("即将学习第" + (i + 1) + "个视频!");
+                delay(1);
+                video_timing_news(i, vTime); //学习每个新闻联播小片段
+                rTime = rTime - vTime;
+                i++;
+                back(); //返回联播频道界面
+                while (!desc("学习").exists()); //等待加载出主页
+                delay(1);
             }
         } else {
             listView.scrollForward(); //翻页
             log("……翻页……");
             delay(2);
-            t = 3;
+            t = 0;
+        }
+        if (text("你已经看到我的底线了").exists()) {
+            log("主人，你已经看到我的底线了…");
+            console.info("退出观看新闻联播视频!");
+            vCount = vCount - i;
+            return false;
         }
     }
+    console.info("已完成视频学习任务!");
+    return true;
 }
+
 
 /**
  * @description: 阅读文章函数  
