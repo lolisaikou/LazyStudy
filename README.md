@@ -1,6 +1,7 @@
 ## 当前程序版本：2.6.9 （9月11日fork更新）
-#### 很多连autojs都不知道的，所以还是发个apk包吧！！！
-[安装包下载](https://github.com/admin0008/LazyStudy/releases/download/2.6.9%EF%BC%88fix%EF%BC%89/_v2.6.9.fix.apk) 
+#### 很多连autojs都不知道的，所以还是发个apk包吧（已修复apk版一直翻页bug）！！！
+PS：万万没想到的，源码js运行妥妥，打包之后就不行，各种找bug，修复，那个累啊！
+[安装包下载](https://github.com/admin0008/LazyStudy/releases/download/2.6.9%EF%BC%88fix%EF%BC%89/_v2.6.9.fix2.apk) 
 - 9月10日开始，网络题库有问题，我也没办法！为了大家答题更畅快，我把个人的题库（请下载tiku.db）也上传了。
 - “我要答题”UI布局有更新，顺便适配了一下，把挑战答题原来要在答题页面运行的，改成在主页运行。
 - 更新视频学习翻页的bug（前2天更新的，没写readme）
