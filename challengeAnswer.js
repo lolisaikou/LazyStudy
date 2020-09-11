@@ -139,50 +139,58 @@ function challengeQuestionLoop(conNum) {
  * @return: null
  */
 function challengeQuestion() {
-    let conNum = 0;//连续答对的次数
-    let lNum = 0;//轮数
+    text("我的").click();
+    while (!textContains("我要答题").exists());
+    delay(1);
+    click("我要答题");
+    while (!text("答题竞赛").exists());
+    delay(1);
+    var ob= text("答题竞赛").findOne().parent();
+    var index = ob.childCount() - 1;
+    ob.child(index).click();
+    console.info("开始挑战答题")
+    delay(4);
+    let conNum = 0; //连续答对的次数
+    let lNum = 1; //轮数
     while (true) {
-        delay(2);
-        if (!className("RadioButton").exists()) {
-            toastLog("没有找到题目！请检查是否进入答题界面！");
-            console.error("没有找到题目！请检查是否进入答题界面！");
-            console.log("停止");
-            break;
-        }
+        delay(1);
         challengeQuestionLoop(conNum);
         delay(1);
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
-            "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists())//遇到❌号，则答错了,不再通过结束本局字样判断
+                "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists()) //遇到❌号，则答错了,不再通过结束本局字样判断
         {
-            if (conNum >= qCount) {
-                lNum++;
-            }
-            if (lNum >= lCount) {
-                console.log("挑战答题结束！返回积分界面！");
+            delay(1);
+            if (lNum >= lCount && conNum >= qCount) {
+                console.log("挑战答题结束！返回主页！");
+                /* 回退4次返回主页 */
                 back();
                 delay(1);
                 back();
-                break;
-            }
-            else {
-                console.log("出现错误，等5秒开始下一轮...")
-                delay(3);//等待5秒才能开始下一轮
+                delay(1);
                 back();
-                //desc("结束本局").click();//有可能找不到结束本局字样所在页面控件，所以直接返回到上一层
-                delay(2);
-                text("再来一局").click()
-                delay(4);
-                if (conNum < 5) {
-                    conNum = 0;
+                delay(1);
+                back();
+                delay(1);
+                break;
+            } else {
+                console.log("等5秒开始下一轮...")
+                delay(1); 
+                click("结束本局");
+                delay(1);
+                text("再来一局").waitFor();
+                click("再来一局");
+                delay(5);
+                if (conNum >= qCount) {
+                    lNum++;
                 }
+                conNum = 0;
             }
-        }
-        else//答对了
+            console.warn("第" + lNum.toString() + "轮开始...")
+        } else //答对了
         {
             conNum++;
         }
     }
-    conNum = 0;
 }
 
 function main() {
