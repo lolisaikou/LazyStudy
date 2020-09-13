@@ -839,9 +839,9 @@ function challengeQuestion() {
     while (!textContains("我要答题").exists());
     delay(1);
     click("我要答题");
-    while (!text("挑战答题").exists());
+    while (!text("每日答题").exists());
     delay(1);
-    text("挑战答题").click();
+    className("android.view.View").text("每日答题").findOne().parent().parent().child(10).click();
     console.log("开始挑战答题")
     delay(4);
     let conNum = 0;//连续答对的次数
