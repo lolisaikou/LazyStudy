@@ -31,6 +31,8 @@ function CreateAndInsert(liArray){
         //log("题目："+li.text());
         var tiMu = liArray[li].content;
         var daAn = liArray[li].answer;
+        var xuanXiang = liArray[li].options;
+        tiMu = tiMu + xuanXiang;
         log(util.format("题目:%s\n答案:%s"),tiMu,daAn);
         stmt.bindString(1, tiMu);
         stmt.bindString(2, daAn);

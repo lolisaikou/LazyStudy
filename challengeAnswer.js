@@ -12,23 +12,6 @@ function delay(seconds) {
 }
 
 /**
- * @description: 生成从minNum到maxNum的随机数
- * @param: minNum-较小的数
- * @param: maxNum-较大的数
- * @return: null
- */
-function randomNum(minNum, maxNum) {
-    switch (arguments.length) {
-        case 1:
-            return parseInt(Math.random() * minNum + 1, 10);
-        case 2:
-            return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
-        default:
-            return 0;
-    }
-} 
-
-/**
  * @description: 从数据库中搜索答案
  * @param: question 问题
  * @return: answer 答案
@@ -37,7 +20,7 @@ function getAnswer(question, table_name) {
     var dbName = "tiku.db";//题库文件名
     var path = files.path(dbName);
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '" + question + "%'"
+    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
@@ -45,7 +28,7 @@ function getAnswer(question, table_name) {
         return answer;
     }
     else {
-        console.log("题库中未找到答案");
+        console.log(table_name + "题库中未找到答案");
         cursor.close();
         return '';
     }
@@ -89,7 +72,7 @@ function challengeQuestionLoop(conNum) {
         question = question.substring(0, chutiIndex - 2);
     }
 
-    question = question.replace(/\s/g, "");
+    question = question.replace(/\s/g, "%");
 
     var options = [];//选项列表
     if (className("ListView").exists()) {
@@ -101,7 +84,8 @@ function challengeQuestionLoop(conNum) {
         console.error("答案获取失败!");
         return;
     }
-
+    var optionStr = options.join("_");
+    question = question + "%" + optionStr;
     var answer = getAnswer(question, 'tiku');
     if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
         answer = getAnswer(question, 'tikuNet');
@@ -121,51 +105,31 @@ function challengeQuestionLoop(conNum) {
     {
         let i = random(0, listArray.length - 1);
         console.error("没有找到答案，随机点击一个");
-        delay(randomNum(0.5, 1));
+        delay(1);
         listArray[i].child(0).click();//随意点击一个答案
         hasClicked = true;
         console.log("------------");
     }
     else//如果找到了答案
     {
-        var clickAns = "";
         listArray.forEach(item => {
             var listDescStr = item.child(0).child(1).text();
             if (listDescStr == answer) {
-                clickAns = answer;
-                //显示 对号
-                var b = item.child(0).bounds();
-                var tipsWindow = drawfloaty(b.left, b.top);
-                //随机时长点击
-                delay(randomNum(0.5, 1.5));
                 //点击
                 item.child(0).click();
                 hasClicked = true;
-                sleep(300);
-                //消失 对号
-                tipsWindow.close();
+                log("-----------------------------------");
             }
         });
     }
     if (!hasClicked)//如果没有点击成功
     {
         console.error("未能成功点击，随机点击一个");
-        delay(randomNum(0.5, 1));
+        delay(1);
         let i = random(0, listArray.length - 1);
         listArray[i].child(0).click();//随意点击一个答案
         console.log("------------");
     }
-}
-
-function drawfloaty(x, y) {
-    //floaty.closeAll();
-    var window = floaty.window(
-        <frame gravity="center">
-            <text id="text" text="✔" textColor="red" />
-        </frame>
-    );
-    window.setPosition(x, y - 45);
-    return window;
 }
 
 
@@ -175,50 +139,58 @@ function drawfloaty(x, y) {
  * @return: null
  */
 function challengeQuestion() {
-    let conNum = 0;//连续答对的次数
-    let lNum = 0;//轮数
+    text("我的").click();
+    while (!textContains("我要答题").exists());
+    delay(1);
+    click("我要答题");
+    while (!text("答题竞赛").exists());
+    delay(1);
+    var ob= text("答题竞赛").findOne().parent();
+    var index = ob.childCount() - 1;
+    ob.child(index).click();
+    console.info("开始挑战答题")
+    delay(4);
+    let conNum = 0; //连续答对的次数
+    let lNum = 1; //轮数
     while (true) {
-        delay(2);
-        if (!className("RadioButton").exists()) {
-            toastLog("没有找到题目！请检查是否进入答题界面！");
-            console.error("没有找到题目！请检查是否进入答题界面！");
-            console.log("停止");
-            break;
-        }
+        delay(1);
         challengeQuestionLoop(conNum);
         delay(1);
         if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
-            "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists())//遇到❌号，则答错了,不再通过结束本局字样判断
+                "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists()) //遇到❌号，则答错了,不再通过结束本局字样判断
         {
-            if (conNum >= qCount) {
-                lNum++;
-            }
-            if (lNum >= lCount) {
-                console.log("挑战答题结束！返回积分界面！");
+            delay(1);
+            if (lNum >= lCount && conNum >= qCount) {
+                console.log("挑战答题结束！返回主页！");
+                /* 回退4次返回主页 */
                 back();
                 delay(1);
                 back();
-                break;
-            }
-            else {
-                console.log("出现错误，等5秒开始下一轮...")
-                delay(3);//等待5秒才能开始下一轮
+                delay(1);
                 back();
-                //desc("结束本局").click();//有可能找不到结束本局字样所在页面控件，所以直接返回到上一层
-                delay(2);
-                text("再来一局").click()
-                delay(4);
-                if (conNum < 5) {
-                    conNum = 0;
+                delay(1);
+                back();
+                delay(1);
+                break;
+            } else {
+                console.log("等5秒开始下一轮...")
+                delay(1); 
+                click("结束本局");
+                delay(1);
+                text("再来一局").waitFor();
+                click("再来一局");
+                delay(5);
+                if (conNum >= qCount) {
+                    lNum++;
                 }
+                conNum = 0;
             }
-        }
-        else//答对了
+            console.warn("第" + lNum.toString() + "轮开始...")
+        } else //答对了
         {
             conNum++;
         }
     }
-    conNum = 0;
 }
 
 function main() {
@@ -228,7 +200,7 @@ function main() {
     challengeQuestion();
     console.hide()
 }
-
+//main();
 module.exports = main;
 
 
