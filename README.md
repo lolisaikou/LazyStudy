@@ -1,4 +1,4 @@
-## 当前程序版本：2.6.9
+## 当前程序版本：2.7.1
 **现在满分为42哦(除了每日和专项答题)**  
 因为刚刚上线，所以`commit`有点多，更新也比较频繁，经常是想到哪改到哪，所以请多包涵，有问题可以提`issue`    
   
@@ -33,6 +33,9 @@
 
 
 ## 版本更新  
+- 2020.10.08  
+        适配强国2.17.0  
+***
 - 2020.08.27  
         重构了题库更新的方法，不再使用jsoup来解析[原题库](http://49.235.90.76:5000/)，而是使用js自带的方法来解析题库的[json源](http://49.235.90.76:5000/api/questions)。并且使用了[jsDelivr](https://www.jsdelivr.com/)加速了json源，[加速用](https://github.com/lolisaikou/tiku-autoupdate)的项目在这里。 [#40](https://github.com/lolisaikou/LazyStudy/issues/40)  
         ~~大概~~修复看视频出现的问题 [#42](https://github.com/lolisaikou/LazyStudy/issues/42)  
