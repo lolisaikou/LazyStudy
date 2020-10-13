@@ -256,7 +256,7 @@ function articleStudy(x) {
     while (!desc("工作").exists());//等待加载出主页
     var listView = className("ListView");//获取文章ListView控件用于翻页
     if (x == 0) {
-        desc("学习").click();//点击主页正下方的"学习"按钮
+        desc("工作").click();//点击主页正下方的"学习"按钮
         delay(2);
         click(aCatlog);
     }
@@ -291,7 +291,7 @@ function articleStudy(x) {
                         delay(0.5);
                         listenToRadio();//听电台广播
                         while (!desc("工作").exists());
-                        desc("学习").click();
+                        desc("工作").click();
                     }
                     delay(2);
                     continue;
@@ -370,7 +370,7 @@ function articleStudy(x) {
  */
 function videoStudy_news() {
     delay(1)
-    desc("学习").click();
+    desc("工作").click();
     delay(2)
     click("电视台");
     delay(1)
@@ -460,7 +460,7 @@ function start_app() {
 function localChannel() {
     delay(1)
     while (!desc("工作").exists());//等待加载出主页
-    desc("学习").click();
+    desc("工作").click();
     console.log("点击本地频道");
     if (text("新思想").exists()) {
         text("新思想").findOne().parent().parent().child(3).click();
@@ -577,7 +577,7 @@ function stopRadio() {
 @return: null
 */
 function sub() {
-    desc("学习").click();
+    desc("工作").click();
     delay(2);
     click("订阅");
     delay(2);
