@@ -1,28 +1,19 @@
 {
   "assets": [],
   "build": {
-    "build_id": "8729C2C7-111",
-    "build_number": 111,
-    "build_time": 1593075213325,
-    "release": false
+    "build_id": "66672776-139",
+    "build_number": 139,
+    "build_time": 1599718777562
   },
-  "encryptLevel": 1,
   "useFeatures": [],
   "icon": "res/logo.png",
   "launchConfig": {
-    "displaySplash": false,
-    "hideLogs": false,
-    "splashText": "Powered by Auto.js Pro",
-    "stableMode": false
+    "hideLogs": false
   },
   "main": "main.js",
-  "name": "懒人学习",
-  "optimization": {
-    "removeOpenCv": true,
-    "unusedResources": true
-  },
-  "packageName": "com.lazyxue",
+  "name": "好好学习",
+  "packageName": "com.goodstudy123",
   "scripts": {},
-  "versionCode": 2,
-  "versionName": "2.6.4"
+  "versionCode": 15,
+  "versionName": "2.7.1.1.Mod"
 }
