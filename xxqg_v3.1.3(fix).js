@@ -20,6 +20,7 @@ var aCount = 6;//文章默认学习篇数
 var vCount = 6;//小视频默认学习个数
 var cCount = 1;//评论次数
 var sCount = 2;//分享次数
+var zCount = 2;//争上游答题轮数
 
 var aTime = 70;//有效阅读一分钟1分*6
 var vTime = 15;//每个小视频学习-15秒
@@ -701,10 +702,10 @@ function judge_tiku_existence() {
 function getAnswer(question, table_name) {
     var dbName = "tiku.db";//题库文件名
     var path = files.path(dbName);
-
+    
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-
-    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '" + question + "%'"
+    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
+    //log(sql)
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
