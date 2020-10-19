@@ -18,7 +18,7 @@ ui.layout(
             </appbar>
             <viewpager id="viewpager">
                 <frame>
-                    <img src={"https://api.ixiaowai.cn/gqapi/gqapi.php?" + new Date().getTime()} scaleType="centerCrop" alpha="0.2" />
+                    //img src={"https://api.ixiaowai.cn/gqapi/gqapi.php?" + new Date().getTime()} scaleType="centerCrop" alpha="0.2" />
                     <text textSize="16sp" textColor="red" text="一键42分 v2.7.1" />
                     <button id="amsw" text="阅读模式选择" layout_gravity="right|top" w="auto" h="auto" circle="true"/>
                     <button id="showFloating" text="打开悬浮窗" w="150" h="60" circle="true" layout_gravity="center" style="Widget.AppCompat.Button.Colored" />
