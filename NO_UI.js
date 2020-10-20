@@ -39,7 +39,7 @@ var xxset = {
     "floating" : 1    //悬浮菜单，1为允许后打开，0为关闭
 }
 
-var bakpath = "/sdcard/goodstudy123/";  //备份目录，配置文件也保存在该目录
+var bakpath = "/sdcard/!goodstudy/";  //备份目录，配置文件也保存在该目录
 var yjxx = "./xxqg_v3.1.3(fixall).js";  //一键学习js
 
 //自定义区结束 ================================================================================
@@ -146,6 +146,32 @@ function geTel(tel){
     return tel.substring(0, 3)+"****"+tel.substr(tel.length-4);
 }
 
+//获取积分
+function getXXScores(text) {
+	launchApp("学习强国");
+	while (!id("home_bottom_tab_button_work").exists());//等待加载出主页
+    id("home_bottom_tab_button_work").findOne().click();//点击主页正下方的"学习"按钮  
+    console.log("正在获取积分...");
+    while (!id("comm_head_xuexi_score").exists());
+    id("comm_head_xuexi_score").findOnce().click();
+    sleep(2000);
+    let err = false;
+    while (!err) {
+        text = textContains("今日已累积").findOne().text();
+        text = Number(text[6] + text[7]);
+		sleep(500);
+		if (!isNaN(text)){
+			err = true;
+		}
+    }    
+    while (!id("home_bottom_tab_button_work").exists())	{
+	    back();
+	    sleep(500);
+	}
+	return text;    
+}
+
+
 //主程序开始
 //控制台显示
 console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
@@ -217,11 +243,14 @@ for (var i = 1; i <xxset.num+1; i++) {
         change_id(xxset[i].user,xxset[i].passward);  //切换账号
     }
     start_xx(yjxx);  //一键答题
-    files.copy("./list.db",xxset[i].dbfile);  
+	files.copy("./list.db",xxset[i].dbfile);  
     files.copy("./list.db",dbpath);  //备份学习记录 
     DLog = detailLog(DLog, "备份"+tel+"的学习记录");
     sleep(1000);
     DLog = detailLog(DLog, "已完成"+tel+"帐号的学习");
+	//获取积分
+	var Scores=getXXScores(Scores);
+	DLog = detailLog(DLog, tel+"今日已获得" + Scores+"积分");
 }
 
 //备份题库

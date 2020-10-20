@@ -1,10 +1,10 @@
-
 //toastLog(" 请在无障碍中选择本 APP");
 auto.waitFor();
 
 let window = floaty.window(
     <vertical>
         <button id="move" text=" 移    动 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+		<button id="NO_IDXX" text=" 多账号学习 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="switchXX" text=" 切到 强国 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startLL" text=" 一键学习 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
@@ -66,6 +66,11 @@ window.exit.click(() => {
 });
 
 let th = null;
+
+//多账号学习
+window.NO_IDXX.click(() => {
+    engines.execScriptFile("NO_UI.js");    
+});
 
 //一键学习
 window.startLL.click(() => {

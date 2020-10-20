@@ -37,7 +37,8 @@ function getAnswer(question, table_name) {
     var dbName = "tiku.db";//题库文件名
     var path = files.path(dbName);
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
-    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '" + question + "%'"
+    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
+    log(sql)
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
@@ -102,9 +103,21 @@ function challengeQuestionLoop(conNum) {
         return;
     }
 
-    var answer = getAnswer(question, 'tiku');
-    if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
-        answer = getAnswer(question, 'tikuNet');
+    reg = /.*择词语的正确.*/g // 正则判断是否为字形
+    if (reg.test(question)) {
+        //log(options)
+        var optionStr = options.join("");
+        question = question + optionStr;//合并问题和选项
+        question = question.substr(1);//开头删除一个字，增加sql查询的准确率
+        question = question.substr(0, question.length - 1);//结尾删除一个字
+        answer = getAnswer(question, 'tikuNet');//直接搜索tikuNet表
+    } else {
+        question = question.substr(1);
+        question = question.substr(0, question.length - 1);
+        var answer = getAnswer(question, 'tiku');
+        if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
+            answer = getAnswer(question, 'tikuNet');
+        }
     }
 
     console.info("答案：" + answer);
@@ -112,7 +125,7 @@ function challengeQuestionLoop(conNum) {
     if (/^[a-zA-Z]{1}$/.test(answer)) {//如果为ABCD形式
         var indexAnsTiku = indexFromChar(answer.toUpperCase());
         answer = options[indexAnsTiku];
-        toastLog("answer from char=" + answer);
+        //toastLog("answer from char=" + answer);
     }
 
     let hasClicked = false;
@@ -228,7 +241,7 @@ function main() {
     challengeQuestion();
     console.hide()
 }
-
+//main()
 module.exports = main;
 
 
