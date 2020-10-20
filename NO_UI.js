@@ -148,8 +148,8 @@ function geTel(tel){
 
 //获取积分
 function getXXScores(text) {
-	launchApp("学习强国");
-	while (!id("home_bottom_tab_button_work").exists());//等待加载出主页
+    //launchApp("学习强国");
+    while (!id("home_bottom_tab_button_work").exists());//等待加载出主页
     id("home_bottom_tab_button_work").findOne().click();//点击主页正下方的"学习"按钮  
     console.log("正在获取积分...");
     while (!id("comm_head_xuexi_score").exists());
