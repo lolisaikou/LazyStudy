@@ -230,14 +230,15 @@ function zsyQuestionLoop() {
             var question = aquestion.substring(4); //争上游和对战题目前带1.2.3.需去除
             //找题目，防出错      
             while (aquestion == oldaquestion || question == "") {
-                delay(0.8);
+                delay(0.5);
                 if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists()) {	
                     console.info("答题结束!");
                     return;
-                }
+                }else{
                 //找题目 
-                aquestion = className("ListView").findOnce().parent().child(0).text();
-                question = aquestion.substring(3);
+                    aquestion = className("ListView").findOnce().parent().child(0).text();
+                    question = aquestion.substring(3);
+		}
             }
             //           
         } else {
