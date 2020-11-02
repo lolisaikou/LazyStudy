@@ -1272,7 +1272,7 @@ function getAnswer(question, table_name) {
        
     if ( table_name=="NET" ) {//网络搜题
         
-            console.error("搜索在线题库出错");//遗留网络搜题模块
+            console.error("搜索在线题库出错");//预留网络搜题模块
             return '';
        
     } else {
