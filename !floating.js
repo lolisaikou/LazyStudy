@@ -73,12 +73,12 @@ window.goodStudy.click(() => {
 
 //一键学习
 window.startLL.click(() => {
-    let ss = "./xxqg_v3.1.3(fixall).js";
+    let ss = "./!xxqg_v3.1.3(fixall).js";
     startTh(ss);
 });
 //手动答题，支持每日、每周、专项、挑战、争上游、双人对战等
 window.startDT.click(() => {
-    let ss = "./zsyTzAnswer.js";  //手动答题
+    let ss = "./!zsyTzAnswer.js";  //手动答题
     startTh(ss);
 });
 
