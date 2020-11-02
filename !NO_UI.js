@@ -1,11 +1,12 @@
 /**
  *
- * ** 更新日志 | 2020.10.30更新:
+ * ** 更新日志 | 2020.11.02更新:
  *  *  1.新增微信推送开关，默认开
  *  *  2.重新启动和登录密码函数
  *  *  3.新增结束后获取积分
  *  *  4.修改解锁是否成功的判断
  *  *  5.相关语句格式调整 
+ *  *  6.支持题库备份和导入，319行注释去掉即可实现导入
  * 
  * 说明：
  *
@@ -41,7 +42,7 @@ var xxset = {
     },
 	"url" : "http://pushplus.hxtrip.com/send", //定义微信推送对象 url+"?token="+token+"&title="+title+"&content="+content
 	"token" : "*****test*****test*****", //在pushplus网站登录可以找到自己的token
-	"xxbackup" : 1,  //备份学习记录和题库，1为备份，0为不备份
+	"xxbackup" : 1,  //备份学习记录和题库，1为备份，0为不备份，备份到/sdcard/!goodstudy/newtiku.db
     "floating" : 1,    //悬浮菜单，1为允许后打开，0为关闭
     "wxpost" : 1    //是否微信推送
 }
@@ -61,6 +62,7 @@ if (files.exists(bakpath+"config.json")) {
         xxset.wxpost = 1;
         files.write(bakpath+"config.json", JSON.stringify(xxset));
     }
+
 } else {
     //生成配置文件
 	files.create(bakpath);//创建备份目录
@@ -120,8 +122,8 @@ function exit_xxid(){
     //sleep(500);
     while (!textContains("确认").exists());
     click("确认"); 
-    //console.log("正在退出原帐号…");
-	DLog = detailLog(DLog, "正在退出原帐号…");
+    console.log("正在退出原帐号…");
+	//DLog = detailLog(DLog, "正在退出原帐号…");
     sleep(1000);
 }
 
@@ -165,7 +167,7 @@ function change_id(user,passward) {
                 }
                 if (f==3){
                         console.log("等待加载出主页");     
-                        f==0;       
+                        f=0;       
                 }   
             }
             sleep(1000);
@@ -214,12 +216,17 @@ function getXXScores(text) {
     sleep(2000);
     let err = false;
     while (!err) {
-        text = textContains("今日已累积").findOne().text();
-        text = Number(text[6] + text[7]);
-		sleep(500);
-		if (!isNaN(text)){
-			err = true;
-		}
+        try{
+            text = textContains("今日已累积").findOne().text();
+            text = Number(text[6] + text[7]);                          
+            if (!isNaN(text)){
+                err = true;
+            }
+        } catch (e) {
+            //console.log(e);
+            console.log("正在重试获取积分...");       
+        }
+        sleep(1000);
     }    
     while (!id("home_bottom_tab_button_work").exists())	{
 	    back();
@@ -247,12 +254,12 @@ function wakeUpdevice(){
         device.wakeUp();//唤醒      
         if (device.device == "HLTE202N") {
             //海信A5，数字解锁，可参考修改，含下面的上滑解锁		
+            desc(1).findOne().click();
             desc(2).findOne().click();
+            desc(3).findOne().click();
+            desc(4).findOne().click();
             desc(5).findOne().click();
             desc(6).findOne().click();
-            desc(9).findOne().click();
-            desc(8).findOne().click();
-            desc(0).findOne().click();
         }
         if (device.device == "markw"){
             //红米4高配版，魔趣，上滑解锁
@@ -306,9 +313,19 @@ function main() {
 
     DLog = detailLog(DLog, "###   正在启动一键学习  ###");
 
-    //循环完成多账户答题
-    let i;   
+    //导入题库
+    if (xxset.xxbackup) {
+        if (files.exists(bakpath+"newtiku.db")){
+            //files.copy(bakpath+"newtiku.db","./tiku.db");
+            //DLog = detailLog(DLog, "导入题库newtiku.db"+bakpath);
+        }
+    }
+
+    //循环完成多账户答题  
     for (var i = 1; i <xxset.num+1; i++) {
+        //手机号码*处理
+        var tel = geTel(xxset[i].user); 
+        DLog = detailLog(DLog, i.toString() + ".==开始"+tel+"学习==");
         var dbpath = files.path(xxset[i].dbfile);
         if (xxset.xxbackup) {
             dbpath = bakpath + xxset[i].dbfile;
@@ -316,32 +333,36 @@ function main() {
                 files.copy(files.path(xxset[i].dbfile),dbpath);
             }
         }
-        //DLog = detailLog(DLog, dbpath); //测试
-        //手机号码*处理
-        var tel = geTel(xxset[i].user); 
-        if (files.exists(dbpath)){
-            files.copy(dbpath, "./list.db");//导入学习记录
+
+        if (files.exists(dbpath)){//导入学习记录
+            files.copy(dbpath, "./list.db");
                 DLog = detailLog(DLog, "导入"+tel+"的学习记录");
                 sleep(1000);
-            }
-        if (xxset.num>1){
-            change_id(xxset[i].user,xxset[i].passward);  //切换账号
         }
+
+        if (xxset.num>1){//切换账号
+            change_id(xxset[i].user,xxset[i].passward);  
+        }
+
         start_xx(yjxx);  //一键答题
         //获取积分
         let Scores=getXXScores(Scores);
         DLog = detailLog(DLog, tel+"今日获得" + Scores+"积分");
-        DLog = detailLog(DLog, "完成"+tel+"帐号的学习");       
-        files.copy("./list.db",xxset[i].dbfile);  
-        files.copy("./list.db",dbpath);  //备份学习记录 
-        sleep(1000);
-        DLog = detailLog(DLog, "备份"+tel+"的学习记录");        
+        DLog = detailLog(DLog, "完成"+tel+"帐号的学习"); 
+        if (xxset.xxbackup) {//备份学习记录      
+            files.copy("./list.db",xxset[i].dbfile);  
+            files.copy("./list.db",dbpath);  //备份学习记录 
+            sleep(1000);
+            DLog = detailLog(DLog, "备份"+tel+"的学习记录");       
+        } 
     }
-
+    
     //备份题库
     if (xxset.xxbackup) {
-        files.copy("./tiku.db",bakpath+"tiku.db");
-        DLog = detailLog(DLog, "备份学习记录到"+bakpath);
+        //files.copy("./tiku.db",bakpath+"tiku.db");
+        //DLog = detailLog(DLog, "备份学习记录到"+bakpath);
+        files.copy("./tiku.db",bakpath+"newtiku.db");
+        DLog = detailLog(DLog, "备份"+bakpath+"newtiku.db");
     }
 
     //获取电量
@@ -387,15 +408,15 @@ function main() {
 
     //提示打开悬浮菜单
     if (xxset.floating) {
-        DLog = detailLog(DLog, "***    30秒后打开悬浮菜单    ***");
+        DLog = detailLog(DLog, "***    10秒后打开悬浮菜单    ***");
     }else{
-        DLog = detailLog(DLog, "***  30秒后关闭日志悬浮窗  ***");
+        DLog = detailLog(DLog, "***  10秒后关闭日志悬浮窗  ***");
     }
 
     //停止相关线程
     threads.shutDownAll();
-    //等待30秒
-    sleep(30*1000);
+    //等待10秒
+    sleep(10*1000);
     //关闭悬浮窗
     console.clear();
     console.hide();
