@@ -58,7 +58,15 @@ function UpdateOrDeleteTK(upOrdel,question,answer) {//只针对tiku表，添加/
     let dbName = "tiku.db";//题库文件名
     let path = files.path(dbName);
     let db = SQLiteDatabase.openOrCreateDatabase(path, null);
+    if (question==undefined) {
+        console.log("题目为空，返回！"); 
+        return;   
+    }
     if (upOrdel=="up" || upOrdel==1) {//更新题库
+        if (answer==undefined) {
+            console.log("答案为空，返回！"); 
+            return;
+        }
         let sql1 = "SELECT answer FROM tiku WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
         let cursor = db.rawQuery(sql1, null);//查找是否存在
         if (!cursor.moveToFirst()) { //不存在，添加到题库                                  
@@ -73,8 +81,8 @@ function UpdateOrDeleteTK(upOrdel,question,answer) {//只针对tiku表，添加/
                 insertOrUpdate(sql1);     
             }
         }                      
-        delay(0.5);
         cursor.close();  //关闭数据库     
+        delay(1);
     } else if (upOrdel=="del" || upOrdel==0) {     
         let sql2 = "SELECT answer FROM tiku WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
         let cursor = db.rawQuery(sql2, null);//查找是否存在
@@ -85,8 +93,8 @@ function UpdateOrDeleteTK(upOrdel,question,answer) {//只针对tiku表，添加/
         } else {                                                
             console.log("本地题库找不到对应的题目，删除失败。");  
         }
-        delay(0.5);
         cursor.close(); //关闭数据库 
+        delay(1);
     }          
 }
 
@@ -100,12 +108,11 @@ function getAnswer(question, table_name) {
     let path = files.path(dbName);
     let db = SQLiteDatabase.openOrCreateDatabase(path, null);
     
-    //10.25修改并合并在线搜题到搜答案函数，table_name=NET时启用
-    
     if ( table_name=="NET" ) {//网络搜题
         
-         return '';//预留网上搜题模块，待找到网上题库用
-                    
+        console.error("搜索在线题库出错");//遗留网络搜题模块
+        return '';
+  
     } else {
         //搜本地题库       
         let sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
@@ -931,6 +938,27 @@ function challengeQuestion() {
  */
 function challengeQuestionLoop(conNum) {
     let ClickAnswer;   
+
+    if (className("ListView").exists()) {
+        var question = className("ListView").findOnce().parent().child(0).text();
+        console.log((conNum + 1).toString() + ".题目：" + question);
+        console.log("------------------------");
+    } else {
+        console.error("提取题目失败!");
+        let listArray = className("ListView").findOnce().children();//题目选项列表
+        let i = random(0, listArray.length - 1);
+        listArray[i].child(0).click();//随意点击一个答案
+        ClickAnswer = listArray[i].child(0).child(1).text();;//记录已点击答案
+        console.log("随机点击:"+ClickAnswer);
+        console.log("------------------------");
+        return;
+    }
+
+    var chutiIndex = question.lastIndexOf("出题单位");
+    if (chutiIndex != -1) {
+        question = question.substring(0, chutiIndex - 2);
+    }
+
     if (conNum >= qCount)//答题次数足够退出，每轮5次
     {
         let listArray = className("ListView").findOnce().children();//题目选项列表
@@ -950,26 +978,6 @@ function challengeQuestionLoop(conNum) {
             }               
         }      
         return;
-    }
-    if (className("ListView").exists()) {
-        var question = className("ListView").findOnce().parent().child(0).text();
-        console.log((conNum + 1).toString() + ".题目：" + question);
-        console.log("------------------------");
-    }
-    else {
-        console.error("提取题目失败!");
-        let listArray = className("ListView").findOnce().children();//题目选项列表
-        let i = random(0, listArray.length - 1);
-        listArray[i].child(0).click();//随意点击一个答案
-        ClickAnswer = listArray[i].child(0).child(1).text();;//记录已点击答案
-        console.log("随机点击:"+ClickAnswer);
-        console.log("------------------------");
-        return;
-    }
-
-    var chutiIndex = question.lastIndexOf("出题单位");
-    if (chutiIndex != -1) {
-        question = question.substring(0, chutiIndex - 2);
     }
 
     var options = [];//选项列表
