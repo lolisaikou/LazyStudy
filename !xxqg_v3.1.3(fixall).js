@@ -22,7 +22,7 @@ var cCount = 1;//评论次数
 var sCount = 2;//分享次数
 var zCount = 2;//争上游答题轮数
 
-var aTime = 30 + random(5, 15);//每篇文章学习-30秒 30*12≈360秒=6分钟
+var aTime = 60 + random(5, 15);//每篇文章学习-60秒 60*6≈360秒=6分钟
 var vTime = 15 + random(5, 15);//每个小视频学习-15秒
 var rTime = 360 + random(5, 15);//广播收听6分 * 60 = 360秒
 //随机加5-15秒学习时长
