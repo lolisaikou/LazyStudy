@@ -1294,7 +1294,7 @@ function getAnswer(question, table_name) {//11.3取得时光在线题库的授�
 				//console.log("网络题目:"+netquestion);//调试用
 				//console.info("题库题目:" + question);//调试用   
 				//console.log("------------------------");  //调试用  
-				添加或更新本地题库答案
+				//添加或更新本地题库答案
 				if (localTiku) {
 					UpdateOrDeleteTK('up', question, answer);//添加或更新到本地题库
 				}
