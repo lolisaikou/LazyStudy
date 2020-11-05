@@ -1272,11 +1272,41 @@ function UpdateOrDeleteTK(upOrdel, question, answer) {//只针对tiku表，添�
  * @param: question 问题
  * @return: answer 答案
  */
-function getAnswer(question, table_name) {
-    if (table_name == "NET") {//网络搜题
-        console.error("搜索在线题库出错");//预留网络搜题模块
-        return '';
-    } else {//搜本地题库
+function getAnswer(question, table_name) {//11.3取得时光在线题库的授权
+	if (table_name == "NET") {//网络搜题  
+		let netTiku = "http://sg89.cn/api/tk1.php"; //在线题库
+		let netziXingTi = "选择词语的正确词形%。"; //字形题网络原题，含空格+第一选项，改为通配%
+		let netquestion = question.replace(ziXingTi, netziXingTi);//还原字形题的原题目（含空格）+第一个选项
+		//发送日志post
+		try {
+			let zxda = http.post(netTiku, {//在线答案
+				"t": "da",
+				"q": netquestion
+			});
+			//判断发送是否成功
+			// (zxda.statusCode = 200) {//post成功info
+			let zxanswer = zxda.body.json();
+			if (zxanswer.code == -1) { //未找到答案
+				console.error("在线题库未找到答案");
+				return '';
+			} else {//找到答案 (0||1)
+				let answer = zxanswer.as;//在线答案
+				//console.log("网络题目:"+netquestion);//调试用
+				//console.info("题库题目:" + question);//调试用   
+				//console.log("------------------------");  //调试用  
+				添加或更新本地题库答案
+				if (localTiku) {
+					UpdateOrDeleteTK('up', question, answer);//添加或更新到本地题库
+				}
+				return answer;//返回答案
+			}
+		} catch (e) {
+			console.log(e);//调试用
+			console.error("搜索在线题库出错，请检查!");
+			//toastLog("搜索在线题库出错，请检查");
+			return '';
+			
+		} else {//搜本地题库
         let dbName = "tiku.db";//题库文件名
         let path = files.path(dbName);
         let db = SQLiteDatabase.openOrCreateDatabase(path, null);
