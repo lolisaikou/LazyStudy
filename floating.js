@@ -9,6 +9,7 @@ let window = floaty.window(
         <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题等 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="startDZ" text=" 对战 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
     </vertical>
@@ -86,6 +87,11 @@ window.startDT.click(() => {
 //每日答题
 window.startMR.click(() => {
     let ss = "./dailyAnswer.js";
+    startTh(ss);
+});
+//对战
+window.startDZ.click(() => {
+    let ss = "./zsyAnswer.js";
     startTh(ss);
 });
 

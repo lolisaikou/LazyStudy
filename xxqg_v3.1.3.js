@@ -166,7 +166,7 @@ function video_timing_news(n, seconds) {
     seconds = seconds + randomNum(0, 10)
     for (var i = 0; i < seconds; i++) {
         sleep(1000);
-        while (!textContains("欢迎发表你的观点").exists())//如果离开了联播小视频界面则一直等待
+        while (!text("播放").exists())//如果离开了联播小视频界面则一直等待
         {
             console.error("当前已离开第" + (n + 1) + "个新闻小视频界面，请重新返回视频");
             delay(2);
@@ -655,9 +655,11 @@ function main() {
         listenToRadio();//听电台广播
     }
     var r_start = new Date().getTime();//广播开始时间
+/** 
     if (myScores['订阅'] != 2) {
         sub();//订阅
     }
+*/
     while (aCount != 0) {
         var x = 0;
         articleStudy(x);//学习文章，包含点赞、分享和评论
