@@ -40,7 +40,7 @@ function getAnswer(question, table_name) {
     var path = files.path(dbName);
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
     sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"// 关键词前后都加%，增加搜索准确率
-    log(sql)
+    //log(sql)
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
@@ -86,7 +86,7 @@ function zsyQuestion() {
     delay(10);
     let zNum = 0;//轮数
     while (true) {
-        if (textContains("距离答题结束").exists()) {
+        if (className("RadioButton").exists()) {
             zsyQuestionLoop();
         }
         if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists())//遇到继续挑战，则本局结束        
@@ -213,7 +213,7 @@ var oldaquestion;//全局变量，定义旧题目，对比新题目用
 
 function zsyQuestionLoop() {
     //delay(1);
-    if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists() || !textContains("距离答题结束").exists()) {//不存在本局结束标志 继续挑战，则执行  
+    if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists() || !className("RadioButton").exists()) {//不存在本局结束标志 继续挑战，则执行  
         console.info("答题结束!");
         return;
     } else {
@@ -224,7 +224,7 @@ function zsyQuestionLoop() {
             //找题目，防出错      
             while (aquestion == oldaquestion || question == "") {
                 delay(0.8);
-                if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists() || !textContains("距离答题结束").exists()) {
+                if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists() || !className("RadioButton").exists()) {
                     console.info("答题结束!");
                     return;
                 }
@@ -351,8 +351,6 @@ function main() {
             exit();
         }
     }
-    console.hide();
 }
-
-// main();
-module.exports = main;
+main()
+//module.exports = main;

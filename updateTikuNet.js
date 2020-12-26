@@ -38,7 +38,7 @@ function CreateAndInsert(liArray) {
     for (var li = 0, len = liArray.size(); li < len; li++) {
         //log("题目："+li.text());
         var liText = liArray.get(li).text();
-        var timuPos = liText.indexOf("】") + 1;
+        var timuPos = liText.indexOf("】");
         var tiMu = liText.replace(/\s/g, "");
         var tiMu = tiMu.substring(timuPos).replace(/_/g, "");
         var daAn = liArray.get(li).select("b").first().text();

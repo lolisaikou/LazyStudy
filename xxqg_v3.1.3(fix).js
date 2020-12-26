@@ -182,7 +182,7 @@ function video_timing_news(n, seconds) {
     seconds = seconds + randomNum(0, 10)
     for (var i = 0; i < seconds; i++) {
         sleep(1000);
-        while (!textContains("欢迎发表你的观点").exists())//如果离开了联播小视频界面则一直等待
+        while (!text("播放").exists())//如果离开了联播小视频界面则一直等待
         {
             console.error("当前已离开第" + (n + 1) + "个新闻小视频界面，请重新返回视频");
             delay(2);
@@ -786,9 +786,21 @@ function challengeQuestionLoop(conNum) {
         return;
     }
 
-    var answer = getAnswer(question, 'tiku');
-    if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
-        answer = getAnswer(question, 'tikuNet');
+    reg = /.*择词语的正确.*/g // 正则判断是否为字形
+    if (reg.test(question)) {
+        //log(options)
+        var optionStr = options.join("");
+        question = question + optionStr;//合并问题和选项
+        question = question.substr(1);//开头删除一个字，增加sql查询的准确率
+        question = question.substr(0, question.length - 1);//结尾删除一个字
+        answer = getAnswer(question, 'tikuNet');//直接搜索tikuNet表
+    } else {
+        question = question.substr(1);
+        question = question.substr(0, question.length - 1);
+        var answer = getAnswer(question, 'tiku');
+        if (answer.length == 0) {//tiku表中没有则到tikuNet表中搜索答案
+            answer = getAnswer(question, 'tikuNet');
+        }
     }
 
     console.info("答案：" + answer);
@@ -796,7 +808,7 @@ function challengeQuestionLoop(conNum) {
     if (/^[a-zA-Z]{1}$/.test(answer)) {//如果为ABCD形式
         var indexAnsTiku = indexFromChar(answer.toUpperCase());
         answer = options[indexAnsTiku];
-        toastLog("answer from char=" + answer);
+        //toastLog("answer from char=" + answer);
     }
 
     let hasClicked = false;
@@ -1330,10 +1342,18 @@ function main() {
         listenToRadio();//听电台广播
     }
     var r_start = new Date().getTime();//广播开始时间
+/** 
     if (myScores['订阅'] != 2) {
         sub();//订阅
     }
-    if (myScores['挑战答题'] != 6) {
+    if (myScores['争上游答题'] == 0) {
+        zsyQuestion();
+    }
+    if (myScores['双人对战'] == 0) {
+        SRQuestion();
+    }
+*/
+    if (myScores['挑战答题'] != 5) {
         challengeQuestion();//挑战答题
     }
     if (myScores['每日答题'] != 6) {
@@ -1368,5 +1388,5 @@ function main() {
     files.copy(path, "/sdcard/Download/list.db");
     console.warn("自动备份已学文章列表到/sdcard/Download!!!");
 }
-// main()
+
 module.exports = main;

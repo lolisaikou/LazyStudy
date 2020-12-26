@@ -28,7 +28,7 @@ function getAnswer(question, table_name) {
 
     var db = SQLiteDatabase.openOrCreateDatabase(path, null);
 
-    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '" + question + "%'"
+    sql = "SELECT answer FROM " + table_name + " WHERE question LIKE '%" + question + "%'"
     var cursor = db.rawQuery(sql, null);
     if (cursor.moveToFirst()) {
         var answer = cursor.getString(0);
