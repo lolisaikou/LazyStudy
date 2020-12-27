@@ -466,7 +466,7 @@ function videoStudy_news() {
 function listenToRadio() {
     click("电台");
     delay(1);
-    click("听新闻广播");
+    click("听广播");
     delay(2);
     while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
         log("等待加载");
@@ -1237,7 +1237,7 @@ function stopRadio() {
     console.log("停止收听广播！");
     click("电台");
     delay(1);
-    click("听新闻广播");
+    click("听广播");
     delay(2);
     while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
         log("等待加载");
