@@ -1353,10 +1353,10 @@ function main() {
         SRQuestion();
     }
 */
-    if (myScores['挑战答题'] != 5) {
+    if (myScores['挑战答题'] != 6) {
         challengeQuestion();//挑战答题
     }
-    if (myScores['每日答题'] != 6) {
+    if (myScores['每日答题'] != 5) {
         dailyQuestion();//每日答题
     }
     while (aCount != 0) {
