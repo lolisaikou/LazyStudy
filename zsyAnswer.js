@@ -1,8 +1,6 @@
 
 importClass(android.database.sqlite.SQLiteDatabase);
-var lCount = 1;//挑战答题轮数
-var qCount = 10;//挑战答题每轮答题数
-var zCount = 2;//争上游答题轮数
+var zCount =2;//争上游答题轮数
 
 /**
  * @description: 延时函数
@@ -58,154 +56,9 @@ function getAnswer(question, table_name) {
 function indexFromChar(str) {
     return str.charCodeAt(0) - "A".charCodeAt(0);
 }
-/**
- * @description: 争上游答题 20200928增加
- * @param: null
- * @return: null
- */
-function zsyQuestion() {
-    /*
-    text("我的").click();
-    if (!textContains("我要答题").exists()) {
-      delay(1);
-      click("我要答题");
-    }else {
-      (!text("我要答题").exists());
-      delay(1);
-      text("我要答题").click();
-      }
-    while (!text("答题练习").exists());//可用词：排行榜 答题竞赛
-    delay(1);
-    className("android.view.View").text("答题练习").findOne().parent().child(8).click();
-    console.log("开始争上游答题")
-    delay(2);
-    */
-    if (className("android.view.View").text("开始比赛").exists()) {
-        className("android.view.View").text("开始比赛").findOne().click();
-    }
-    delay(10);
-    let zNum = 0;//轮数
-    while (true) {
-        if (className("RadioButton").exists()) {
-            zsyQuestionLoop();
-        }
-        if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists())//遇到继续挑战，则本局结束        
-        {
-            console.info("争上游答题本局结束!");
-            zNum++;
-            //当天上限两次
-            if (className("android.view.View").text("非积分奖励局").exists()) {
-                console.info("今天已完成争上游答题!");
-                zNum++;
-            }//
-            if (zNum >= zCount) {
-                console.log("争上游答题结束");
-                //回退4次返回主页 
-                delay(1);
-                back();
-                break;
-            } else {
-                console.log("即将开始下一轮...")
-                delay(2);//等待2秒开始下一轮
-                back();
-                delay(1);
-                back();
-                while (!text("答题练习").exists());//排行榜 答题竞赛
-                delay(1);
-                className("android.view.View").text("答题练习").findOne().parent().child(8).click();
-                console.log("开始争上游答题")
-                delay(2);
-                if (className("android.view.View").text("开始比赛").exists()) {
-                    className("android.view.View").text("开始比赛").findOne().click();
-                }
-                delay(10);
-            }
-            console.warn("第" + zNum.toString() + "轮开始...")
-        }
-    }
-}
 
 /**
- * @description: 双人对战答题 20200928增加
- * @param: null
- * @return: null
- */
-function SRQuestion() {
-    /*
-    text("我的").click();
-    if (!textContains("我要答题").exists()) {
-     delay(1);
-     click("我要答题");
-      } else {
-     (!text("我要答题").exists());
-    delay(1);
-    text("我要答题").click();
-     }
-    while (!text("答题练习").exists());//可用词：排行榜 答题竞赛
-    delay(1);
-    className("android.view.View").text("答题练习").findOne().parent().child(9).click();
-    console.log("开始双人对战")
-    delay(2);
-    if(className("android.view.View").text("邀请对手").exists()){
-    className("android.view.View").text("邀请对手").findOne().parent().child(0).click();
-      }
-    delay(1);
-    */
-    if (className("android.view.View").text("邀请对手").exists()) {
-        className("android.view.View").text("邀请对手").findOne().parent().child(0).click();
-    }
-    delay(2)
-    if (className("android.view.View").text("开始对战").exists()) {
-        className("android.view.View").text("开始对战").findOne().click();
-    }
-    delay(10);
-    let zNum = 1;//轮数
-    while (true) {
-        zsyQuestionLoop();
-        if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists())//遇到继续挑战，则本局结束
-        {
-            console.info("双人对战本局结束!");
-            zNum++;
-            if (zNum >= zCount) {
-                console.log("双人对战结束！返回主页！");
-                //回退4次返回主页 
-                back(); delay(1);
-                back(); delay(1);
-                if (text("退出").exists()) {
-                    className("android.widget.Button").text("退出").findOne().click();
-                    delay(1);
-                }
-                break;
-            } else {
-                console.log("即将开始下一轮...")
-                back();
-                delay(1);
-                back();
-                delay(1);
-                if (textContains("退出").exists()) {
-                    className("android.widget.Button").text("退出").findOne().click();
-                    delay(1);
-                }
-                while (!text("答题练习").exists());//排行榜 答题竞赛
-                delay(1);
-                console.log("开始双人对战")
-                delay(2);
-                if (className("android.view.View").text("邀请对手").exists()) {
-                    className("android.view.View").text("邀请对手").findOne().parent().child(0).click();
-                }
-                delay(1);
-                if (className("android.view.View").text("开始对战").exists()) {
-                    className("android.view.View").text("开始对战").findOne().click();
-                }
-                delay(10);
-            }
-            console.warn("第" + zNum.toString() + "轮开始...")
-        }
-    }
-}
-
-/**
- * @description: 争上游答题 双人对战答题循环
+ * @description: 争上游答题循环
  * @param: null
  * @return: null
  */
@@ -331,26 +184,77 @@ function zsyQuestionLoop() {
         delay(1);
     }
 }
-//争上游部分
 
-function main() {
-    console.setPosition(0, device.height / 2);
-    console.show();
-    delay(1);
-    if (className("android.view.View").text("开始比赛").exists()) {//争上游答题开始页
-        console.log("开始争上游答题");
-        zsyQuestion();
-    } else {
-        if (className("android.view.View").text("开始对战").exists()) {//双人对战开始页
-            console.log("开始双人对战答题");
-            SRQuestion();
-        } else {
-            // toastLog("没有找到 “争上游答题”或“双人对战” 的开始页！请检查是否进入相关界面！");
-            console.error("没有找到 “争上游答题”或“双人对战”  开始页！请检查是否进入相关界面！");
-            console.log("停止");
-            console.hide();
+
+/**
+ * @description: 争上游答题 20200928增加
+ * @param: null
+ * @return: null
+ */
+function zsyQuestion() {
+
+    if (className("android.view.View").text("开始比赛").exists()) {
+        className("android.view.View").text("开始比赛").findOne().click();
+    }
+    delay(10);
+    let zNum = 0;//轮数
+    while (true) {
+        if (className("RadioButton").exists()) {
+            zsyQuestionLoop();
+        }
+        if (className("android.view.View").text("继续挑战").exists() || textContains("继续挑战").exists())//遇到继续挑战，则本局结束        
+        {
+            console.info("争上游答题本局结束!");
+            zNum++;
+            //当天上限两次
+            if (className("android.view.View").text("非积分奖励局").exists()) {
+                console.info("今天已完成争上游答题!");
+                zNum++;
+            }//
+            if (zNum >= zCount) {
+                console.log("争上游答题结束");
+                //回退4次返回主页 
+                delay(1);
+                back();
+                break;
+            } else {
+                console.log("即将开始下一轮...")
+                console.info("2秒后开始下一轮")
+                delay(2);//等待2秒开始下一轮
+                back();
+                text("开始比赛").click();
+                delay(10);
+            }
+            console.warn("第" + zNum.toString() + "轮开始...")
         }
     }
+}
+
+
+//
+
+// function main() {
+//     console.setPosition(0, device.height / 2);
+//     console.show();
+//     delay(1);
+//     if (className("android.view.View").text("开始比赛").exists() || className("android.view.View").text("区配成功").exists() || className("RadioButton").exists()) {//争上游答题开始页
+//         console.log("开始争上游答题");
+//         zsyQuestion();
+//     } else {
+//         // toastLog("没有找到 “争上游答题”或“双人对战” 的开始页！请检查是否进入相关界面！");
+//         console.error("没有找到 “争上游答题”或“双人对战”  开始页！请检查是否进入相关界面！");
+//         console.log("停止");
+//         console.hide();
+//     }
+
+// }
+function main() {
+    console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
+    console.show();
+    delay(1);
+    console.log("开始争上游答题");
+    zsyQuestion();
+    console.hide()
 }
 //main()
 module.exports = main;
