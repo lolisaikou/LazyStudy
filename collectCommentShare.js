@@ -35,15 +35,20 @@ function main()
     // collectIcon.click();//点击收藏
     // delay(2);
         //var shareIcon = className("com.uc.webview.export.WebView").findOnce().parent().child(8);//右下角分享按钮
-    shareIcon.click();//点击分享
-    while(!textContains("分享到学习强").exists());//等待弹出分享选项界面
-    delay(2);
-    click("分享到学习强国");
-    delay(1);
-    //toastLog("分享成功!");
-    delay(1);
-    back();//返回文章界面
-    delay(2);
+    sharecount = 0;
+    while(sharecount<2){
+        sharecount++;
+        shareIcon.click();//点击分享
+        while(!textContains("分享到学习强").exists());//等待弹出分享选项界面
+        delay(2);
+        click("分享到学习强国");
+        delay(1);
+        toastLog("第"+ sharecount.toString() + "分享成功!");
+        delay(1);
+        back();//返回文章界面
+        delay(2);
+    }
+   
     //评论
     
     var num=random(0,commentText.length-1)//随机数

@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "tiku",
+            "group": "tiku",
+            "database": "${workspaceFolder:LazyStudy}/tiku.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

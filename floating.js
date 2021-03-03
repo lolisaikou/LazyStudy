@@ -6,10 +6,11 @@ let window = floaty.window(
         <button id="move" text=" 移动 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="switchXX" text=" 切到 强国 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startLL" text=" 开始浏览 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="startSFP" text=" 收藏分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="startSFP" text=" 分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题等 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="startDZ" text=" 对战 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="srs" text=" 四人赛 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="srDZ" text=" 双人对战 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
     </vertical>
@@ -89,9 +90,14 @@ window.startMR.click(() => {
     let ss = "./dailyAnswer.js";
     startTh(ss);
 });
-//对战
-window.startDZ.click(() => {
-    let ss = "./zsyAnswer.js";
+//四人赛
+window.srs.click(() => {
+    let ss = "./foursome.js";
+    startTh(ss);
+});
+//双人答题
+window.srDZ.click(() => {
+    let ss = "./doubleAnswer.js";
     startTh(ss);
 });
 
