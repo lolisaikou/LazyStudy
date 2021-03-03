@@ -85,7 +85,7 @@ ui.viewpager.setTitles(["功能", "题库", "帮助与更新"]);
 ui.tabs.setupWithViewPager(ui.viewpager);
 
 //帮助页加载
-var src = "https://github.com/lolisaikou/LazyStudy/blob/master/README.md";
+var src = "https://cdn.jsdelivr.net/gh/Rsweater/LazyStudy-1/README.md";
 ui.webview.loadUrl(src);
 
 //进度条不可见
