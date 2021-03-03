@@ -9,7 +9,7 @@ let window = floaty.window(
         <button id="startSFP" text=" 分享评论 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startDT" text=" 挑战答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="startMR" text=" 每日答题等 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
-        <button id="zsyDT" text=" 争上游答题 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
+        <button id="srs" text=" 四人赛 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="srDZ" text=" 双人对战 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="stop" text=" 停止 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
         <button id="exit" text=" 退出悬浮窗 " w="90" h="35" bg="#77ffffff" textSize="10sp" />
@@ -90,9 +90,9 @@ window.startMR.click(() => {
     let ss = "./dailyAnswer.js";
     startTh(ss);
 });
-//争上游答题
-window.zsyDT.click(() => {
-    let ss = "./zsyAnswer.js";
+//四人赛
+window.srs.click(() => {
+    let ss = "./foursome.js";
     startTh(ss);
 });
 //双人答题

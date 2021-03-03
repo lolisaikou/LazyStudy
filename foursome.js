@@ -1,6 +1,6 @@
 
 importClass(android.database.sqlite.SQLiteDatabase);
-var zCount =2;//争上游答题轮数
+var zCount =2;//四人赛轮数
 
 /**
  * @description: 延时函数
@@ -58,7 +58,7 @@ function indexFromChar(str) {
 }
 
 /**
- * @description: 争上游答题循环
+ * @description: 四人赛循环
  * @param: null
  * @return: null
  */
@@ -187,7 +187,7 @@ function zsyQuestionLoop() {
 
 
 /**
- * @description: 争上游答题 20200928增加
+ * @description: 四人赛答题 20200928增加
  * @param: null
  * @return: null
  */
@@ -252,7 +252,7 @@ function main() {
     console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
     console.show();
     delay(1);
-    console.log("开始争上游答题");
+    console.log("进入四人赛...");
     zsyQuestion();
     console.hide()
 }
